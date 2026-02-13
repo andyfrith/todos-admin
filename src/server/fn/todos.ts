@@ -1,0 +1,31 @@
+import { createServerFn } from '@tanstack/react-start';
+import { desc, eq } from 'drizzle-orm';
+import type { Todo } from '@/lib/schema';
+import { db } from '@/db/index';
+import { todos } from '@/db/schema';
+
+export const getTodos = createServerFn({
+  method: 'GET',
+}).handler(async () => {
+  return (await db.query.todos.findMany({
+    orderBy: [desc(todos.createdAt)],
+  })) as Array<Todo>;
+});
+
+export const createTodo = createServerFn({
+  method: 'POST',
+})
+  .inputValidator((data: { title: string }) => data)
+  .handler(async ({ data }) => {
+    await db.insert(todos).values({ title: data.title });
+    return { success: true };
+  });
+
+export const deleteTodo = createServerFn({
+  method: 'POST',
+})
+  .inputValidator((data: { id: string }) => data)
+  .handler(async ({ data }) => {
+    await db.delete(todos).where(eq(todos.id, parseInt(data.id)));
+    return { success: true };
+  });
