@@ -21,11 +21,35 @@ export const createTodo = createServerFn({
     return { success: true };
   });
 
+export const updateTodo = createServerFn({
+  method: 'POST',
+})
+  .inputValidator(
+    (data: {
+      id: number;
+      title: string;
+      todoType?: string;
+      completed?: boolean;
+    }) => data,
+  )
+  .handler(async ({ data }) => {
+    await db
+      .update(todos)
+      .set({
+        title: data.title,
+        ...(data.todoType != null && { todoType: data.todoType }),
+        ...(data.completed != null && { completed: data.completed }),
+        updatedAt: new Date(),
+      })
+      .where(eq(todos.id, data.id));
+    return { success: true };
+  });
+
 export const deleteTodo = createServerFn({
   method: 'POST',
 })
-  .inputValidator((data: { id: string }) => data)
+  .inputValidator((data: { id: number }) => data)
   .handler(async ({ data }) => {
-    await db.delete(todos).where(eq(todos.id, parseInt(data.id)));
+    await db.delete(todos).where(eq(todos.id, data.id));
     return { success: true };
   });

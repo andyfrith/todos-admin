@@ -13,6 +13,7 @@ import { Route as TodosRouteRouteImport } from './routes/todos/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TodosIndexRouteImport } from './routes/todos/index'
 import { Route as TodosAddRouteImport } from './routes/todos/add'
+import { Route as TodosIdEditRouteImport } from './routes/todos/$id/edit'
 
 const TodosRouteRoute = TodosRouteRouteImport.update({
   id: '/todos',
@@ -34,17 +35,24 @@ const TodosAddRoute = TodosAddRouteImport.update({
   path: '/add',
   getParentRoute: () => TodosRouteRoute,
 } as any)
+const TodosIdEditRoute = TodosIdEditRouteImport.update({
+  id: '/$id/edit',
+  path: '/$id/edit',
+  getParentRoute: () => TodosRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/todos': typeof TodosRouteRouteWithChildren
   '/todos/add': typeof TodosAddRoute
   '/todos/': typeof TodosIndexRoute
+  '/todos/$id/edit': typeof TodosIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/todos/add': typeof TodosAddRoute
   '/todos': typeof TodosIndexRoute
+  '/todos/$id/edit': typeof TodosIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -52,13 +60,14 @@ export interface FileRoutesById {
   '/todos': typeof TodosRouteRouteWithChildren
   '/todos/add': typeof TodosAddRoute
   '/todos/': typeof TodosIndexRoute
+  '/todos/$id/edit': typeof TodosIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/todos' | '/todos/add' | '/todos/'
+  fullPaths: '/' | '/todos' | '/todos/add' | '/todos/' | '/todos/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/todos/add' | '/todos'
-  id: '__root__' | '/' | '/todos' | '/todos/add' | '/todos/'
+  to: '/' | '/todos/add' | '/todos' | '/todos/$id/edit'
+  id: '__root__' | '/' | '/todos' | '/todos/add' | '/todos/' | '/todos/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -96,17 +105,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TodosAddRouteImport
       parentRoute: typeof TodosRouteRoute
     }
+    '/todos/$id/edit': {
+      id: '/todos/$id/edit'
+      path: '/$id/edit'
+      fullPath: '/todos/$id/edit'
+      preLoaderRoute: typeof TodosIdEditRouteImport
+      parentRoute: typeof TodosRouteRoute
+    }
   }
 }
 
 interface TodosRouteRouteChildren {
   TodosAddRoute: typeof TodosAddRoute
   TodosIndexRoute: typeof TodosIndexRoute
+  TodosIdEditRoute: typeof TodosIdEditRoute
 }
 
 const TodosRouteRouteChildren: TodosRouteRouteChildren = {
   TodosAddRoute: TodosAddRoute,
   TodosIndexRoute: TodosIndexRoute,
+  TodosIdEditRoute: TodosIdEditRoute,
 }
 
 const TodosRouteRouteWithChildren = TodosRouteRoute._addFileChildren(

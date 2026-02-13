@@ -50,7 +50,6 @@ export default function TodoShadcnForm({
   // });
   const onSubmit: SubmitHandler<Todo> = (data: Todo) => {
     onFormSubmit(data);
-    toast.success('Todo created successfully', { position: 'top-center' });
     form.reset();
   };
 

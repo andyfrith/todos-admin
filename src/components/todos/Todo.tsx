@@ -4,9 +4,11 @@ import type { Todo } from '@/lib/schema';
 export default function Todo({
   todo,
   handleDelete,
+  handleEdit,
 }: {
   todo: Todo;
-  handleDelete: (id: string) => void;
+  handleDelete: (id: number) => void;
+  handleEdit: (id: number) => void;
 }) {
   return (
     <li
@@ -23,14 +25,19 @@ export default function Todo({
           {todo.title}
         </span>
         <div>
-          {/* <span className="text-xs text-indigo-300/70">#{todo.id}</span> */}
+          {/* {handleEdit && todo.id != null && ( */}
           <button
             className="mr-3"
-            onClick={() => handleDelete(todo.id?.toString() ?? '')}
+            onClick={() => handleEdit(todo.id)}
+            aria-label="Edit todo"
           >
             <Pencil className="w-4 h-4" />
           </button>
-          <button onClick={() => handleDelete(todo.id?.toString() ?? '')}>
+          {/* )} */}
+          <button
+            onClick={() => handleDelete(todo.id)}
+            aria-label="Delete todo"
+          >
             <TrashIcon className="w-4 h-4" />
           </button>
         </div>
