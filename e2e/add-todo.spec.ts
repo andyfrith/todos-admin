@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { openNav, clickNavLink } from './fixtures';
+import { expect, test } from '@playwright/test';
+import { clickNavLink, openNav } from './fixtures';
 
 test.describe('Add Todo route (/todos/add)', () => {
   test('displays Add Todo heading and form', async ({ page }) => {

@@ -1,310 +1,194 @@
-Welcome to your new TanStack app! 
+# Todos Admin
 
-# Getting Started
+A **production-ready full-stack starter** built with the TanStack ecosystem: type-safe routing, server functions, real-time data with React Query, and a PostgreSQL-backed Todo CRUD app. Use it as a template to ship features fast—or as a reference for modular architecture and modern React patterns.
 
-To run this application:
+---
 
-```bash
-pnpm install
-pnpm dev
+## 🎯 Purpose
+
+**Todos Admin** is a minimal but complete TanStack Start application. It gives you:
+
+- A **ready-to-extend** stack: React 19, TypeScript, TanStack Router & Query, Drizzle ORM, and Shadcn UI.
+- A **working Todo example** (list, add, edit, delete) so you see data flow from DB → server functions → hooks → UI.
+- **Documentation and structure** designed for both humans and AI-assisted development (e.g. Cursor, Claude).
+
+Clone it, point it at a Postgres database, and start building—no boilerplate archaeology required.
+
+---
+
+## 📸 Screenshots
+
+![Todos Admin – Todo list view](screenshot1.png)
+
+*Todo list view*
+
+![Todos Admin – Add / Edit flow](screenshot2.png)
+
+*Add / Edit flow*
+
+---
+
+## ✨ Features
+
+| Feature | Description |
+|--------|-------------|
+| **Full Todo CRUD** | List, create, edit, and delete todos with validation (title length, todo type). |
+| **Type-safe server functions** | TanStack Start server functions with Zod validation and Drizzle for persistence. |
+| **TanStack Query** | Caching, invalidation, and loading/error states out of the box. |
+| **File-based routing** | TanStack Router with layouts; routes like `/`, `/todos`, `/todos/add`, `/todos/:id/edit`. |
+| **Forms** | React Hook Form + Zod + Shadcn (Field, Input, Select, Checkbox) with a shared schema. |
+| **Theming** | Light/dark theme with CSS variables and Shadcn conventions. |
+| **Toasts** | Sonner for success and error feedback on mutations. |
+| **Storybook** | Isolated development and documentation for UI components. |
+| **Testing** | Vitest for unit/integration; Playwright for E2E (critical flows). |
+| **Dev experience** | ESLint, Prettier, TanStack Router/Query devtools, Drizzle Studio. |
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Framework** | [TanStack Start](https://tanstack.com/start) (React + Vite + Nitro) |
+| **Routing** | [TanStack Router](https://tanstack.com/router) (file-based) |
+| **Data & cache** | [TanStack Query](https://tanstack.com/query) (React Query) |
+| **Database** | PostgreSQL + [Drizzle ORM](https://orm.drizzle.team/) |
+| **Validation & types** | [Zod](https://zod.dev/) + TypeScript |
+| **Styling** | [Tailwind CSS](https://tailwindcss.com/) v4 + [Shadcn UI](https://ui.shadcn.com/) |
+| **Forms** | [React Hook Form](https://react-hook-form.com/) + `@hookform/resolvers` (Zod) |
+| **Notifications** | [Sonner](https://sonner.emilkowal.ski/) |
+| **Testing** | [Vitest](https://vitest.dev/), [Playwright](https://playwright.dev/) |
+| **Package manager** | pnpm |
+
+---
+
+## 📁 Project Structure
+
+The codebase follows a **modular (layered) architecture**: presentation → hooks → server functions → database. Each layer has a clear home.
+
+```
+src/
+├── router.tsx              # Router + TanStack Query context (do not call from app code)
+├── routeTree.gen.ts        # Generated routes (do not edit)
+├── styles.css              # Tailwind + theme variables
+├── components/
+│   ├── todos/              # Feature: list, item, add/edit forms
+│   ├── ui/                 # Shadcn primitives (button, input, select, field, etc.)
+│   └── Header.tsx           # Layout
+├── routes/                 # File-based: __root, index, todos/, todos/add, todos/$id/edit
+├── hooks/                  # useTodos, useCreateTodo, useUpdateTodo, useDeleteTodo
+├── queries/                # TanStack Query options (e.g. todosQueryOptions)
+├── server/fn/              # Server functions: getTodos, createTodo, updateTodo, deleteTodo
+├── db/
+│   ├── schema.ts           # Drizzle table definitions (source of truth for DB)
+│   └── index.ts            # Drizzle client + connection
+├── lib/
+│   ├── schema.ts           # Zod schemas + inferred types (Todo, TodoSchema) for forms & API
+│   └── utils.ts            # cn() and other shared helpers
+├── integrations/           # TanStack Query provider + devtools
+└── data/                   # Static/demo data (e.g. demo server functions)
 ```
 
-# Building For Production
+**Rule of thumb:** Routes and components use **hooks**; hooks use **server functions** and **query options**; server functions use **Drizzle** and **`lib/schema`**. No UI or routes in server/db code.
 
-To build this application for production:
+---
 
-```bash
-pnpm build
-```
+## 🏗️ Architecture Patterns
 
-## Testing
+- **Server functions as API** — All Todo operations are TanStack Start server functions (`createServerFn`). No REST route files for CRUD; the client calls functions like `createTodo({ data: { title } })`.
+- **Single source of truth for types** — DB shape in `src/db/schema.ts`; app and validation in `src/lib/schema.ts` (Zod + inferred types). Forms and server I/O share the same schemas.
+- **Query options + hooks** — Query keys and `queryFn`s live in `src/queries/`; hooks in `src/hooks/` wrap mutations, invalidate cache (e.g. `['todos']`), and show toasts.
+- **Layered dependencies** — Presentation (routes, components) → hooks → server functions → database. Keeps the app testable and easy to change.
 
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+For full detail (data flow, examples, best practices), see **[docs/technical/architecture.md](docs/technical/architecture.md)**.
 
-```bash
-pnpm test
-```
+---
 
-## Styling
+## 📚 Documentation
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+| Document | Description |
+|----------|-------------|
+| **[Product requirements (PRD)](docs/prd.md)** | Scope, data model, user flows, requirements, API contract, and implementation order for LLMs. |
+| **[Technical architecture](docs/technical/architecture.md)** | Modular layers, directory layout, server functions, DB, hooks, queries, routes, and conventions. |
+| **[Form patterns](docs/ux/forms-react-hook-form-shadcn.md)** | React Hook Form + Zod + Shadcn patterns used for Todo add/edit. |
+| **[E2E testing](docs/e2e-testing.md)** | Playwright setup and conventions for end-to-end tests. |
 
+---
 
-## Linting & Formatting
+## 🚀 Getting Started
 
+### Prerequisites
 
-This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
+- Node.js (LTS)
+- pnpm (`npm install -g pnpm`)
+- PostgreSQL (local or Docker)
 
-```bash
-pnpm lint
-pnpm format
-pnpm check
-```
+### Setup
 
+1. **Clone and install**
 
-## Shadcn
+   ```bash
+   pnpm install
+   ```
 
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
+2. **Configure the database**
+
+   Copy `.env.example` to `.env` or `.env.local` and set either:
+
+   - `DATABASE_URL=postgres://user:password@host:port/dbname`  
+   or  
+   - `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`, `DB_NAME`
+
+   Then create the schema:
+
+   ```bash
+   pnpm db:push
+   # or: pnpm db:generate && pnpm db:migrate
+   ```
+
+3. **Run the app**
+
+   ```bash
+   pnpm dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000). You should see the app and be able to list, add, edit, and delete todos.
+
+### Other commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm build` | Production build |
+| `pnpm preview` | Preview production build locally |
+| `pnpm test` | Run Vitest unit/integration tests |
+| `pnpm run test:e2e` | Run Playwright E2E tests |
+| `pnpm run test:e2e:ui` | Playwright E2E in UI mode |
+| `pnpm lint` | Run ESLint |
+| `pnpm check` | Prettier + ESLint (format and fix) |
+| `pnpm db:studio` | Open Drizzle Studio |
+| `pnpm storybook` | Start Storybook (default port 6006) |
+
+### Adding Shadcn components
+
+Use the latest Shadcn CLI:
 
 ```bash
 pnpm dlx shadcn@latest add button
 ```
 
+---
 
+## 🔗 Learn more
 
-## Routing
-This project uses [TanStack Router](https://tanstack.com/router). The initial setup is a file based router. Which means that the routes are managed as files in `src/routes`.
+- [TanStack](https://tanstack.com) — Router, Query, Start, and more
+- [Drizzle ORM](https://orm.drizzle.team/)
+- [Shadcn UI](https://ui.shadcn.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
 
-### Adding A Route
+---
 
-To add a new route to your application just add another a new file in the `./src/routes` directory.
+## 📫 Let's Connect
 
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you use the `<Outlet />` component.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-
-import { Link } from "@tanstack/react-router";
-
-export const Route = createRootRoute({
-  component: () => (
-    <>
-      <header>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-        </nav>
-      </header>
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
-  ),
-})
-```
-
-The `<TanStackRouterDevtools />` component is not required so you can remove it if you don't want it in your layout.
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-const peopleRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/people",
-  loader: async () => {
-    const response = await fetch("https://swapi.dev/api/people");
-    return response.json() as Promise<{
-      results: {
-        name: string;
-      }[];
-    }>;
-  },
-  component: () => {
-    const data = peopleRoute.useLoaderData();
-    return (
-      <ul>
-        {data.results.map((person) => (
-          <li key={person.name}>{person.name}</li>
-        ))}
-      </ul>
-    );
-  },
-});
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-### React-Query
-
-React-Query is an excellent addition or alternative to route loading and integrating it into you application is a breeze.
-
-First add your dependencies:
-
-```bash
-pnpm add @tanstack/react-query @tanstack/react-query-devtools
-```
-
-Next we'll need to create a query client and provider. We recommend putting those in `main.tsx`.
-
-```tsx
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-// ...
-
-const queryClient = new QueryClient();
-
-// ...
-
-if (!rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement);
-
-  root.render(
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
-  );
-}
-```
-
-You can also add TanStack Query Devtools to the root route (optional).
-
-```tsx
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
-const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <Outlet />
-      <ReactQueryDevtools buttonPosition="top-right" />
-      <TanStackRouterDevtools />
-    </>
-  ),
-});
-```
-
-Now you can use `useQuery` to fetch your data.
-
-```tsx
-import { useQuery } from "@tanstack/react-query";
-
-import "./App.css";
-
-function App() {
-  const { data } = useQuery({
-    queryKey: ["people"],
-    queryFn: () =>
-      fetch("https://swapi.dev/api/people")
-        .then((res) => res.json())
-        .then((data) => data.results as { name: string }[]),
-    initialData: [],
-  });
-
-  return (
-    <div>
-      <ul>
-        {data.map((person) => (
-          <li key={person.name}>{person.name}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-export default App;
-```
-
-You can find out everything you need to know on how to use React-Query in the [React-Query documentation](https://tanstack.com/query/latest/docs/framework/react/overview).
-
-## State Management
-
-Another common requirement for React applications is state management. There are many options for state management in React. TanStack Store provides a great starting point for your project.
-
-First you need to add TanStack Store as a dependency:
-
-```bash
-pnpm add @tanstack/store
-```
-
-Now let's create a simple counter in the `src/App.tsx` file as a demonstration.
-
-```tsx
-import { useStore } from "@tanstack/react-store";
-import { Store } from "@tanstack/store";
-import "./App.css";
-
-const countStore = new Store(0);
-
-function App() {
-  const count = useStore(countStore);
-  return (
-    <div>
-      <button onClick={() => countStore.setState((n) => n + 1)}>
-        Increment - {count}
-      </button>
-    </div>
-  );
-}
-
-export default App;
-```
-
-One of the many nice features of TanStack Store is the ability to derive state from other state. That derived state will update when the base state updates.
-
-Let's check this out by doubling the count using derived state.
-
-```tsx
-import { useStore } from "@tanstack/react-store";
-import { Store, Derived } from "@tanstack/store";
-import "./App.css";
-
-const countStore = new Store(0);
-
-const doubledStore = new Derived({
-  fn: () => countStore.state * 2,
-  deps: [countStore],
-});
-doubledStore.mount();
-
-function App() {
-  const count = useStore(countStore);
-  const doubledCount = useStore(doubledStore);
-
-  return (
-    <div>
-      <button onClick={() => countStore.setState((n) => n + 1)}>
-        Increment - {count}
-      </button>
-      <div>Doubled - {doubledCount}</div>
-    </div>
-  );
-}
-
-export default App;
-```
-
-We use the `Derived` class to create a new store that is derived from another store. The `Derived` class has a `mount` method that will start the derived store updating.
-
-Once we've created the derived store we can use it in the `App` component just like we would any other store using the `useStore` hook.
-
-You can find out everything you need to know on how to use TanStack Store in the [TanStack Store documentation](https://tanstack.com/store/latest).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
+- **Portfolio:** [andyfrith.com](https://andyfrith.com)
+- **LinkedIn:** [linkedin.com/in/goodapplemedia](https://linkedin.com/in/goodapplemedia)
+- **GitHub:** [@andyfrith](https://github.com/andyfrith)

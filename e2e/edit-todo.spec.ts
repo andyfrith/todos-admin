@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { openNav } from './fixtures';
 
 test.describe('Edit Todo route (/todos/:id/edit)', () => {
