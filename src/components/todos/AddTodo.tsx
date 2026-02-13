@@ -1,8 +1,5 @@
-import { toast } from 'sonner';
 import type { Todo } from '@/lib/schema';
-import { useCreateTodo, useDeleteTodo, useTodos } from '@/hooks/useTodos';
-import TodoComponent from '@/components/todos/Todo';
-// import TodoForm from '@/components/todos/TodoForm';
+import { useCreateTodo } from '@/hooks/useTodos';
 import TodoForm from '@/components/todos/TodoShadcnForm';
 
 export default function AddTodo() {

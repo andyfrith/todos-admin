@@ -1,12 +1,18 @@
+import { useNavigate } from '@tanstack/react-router';
 import { useDeleteTodo, useTodos } from '@/hooks/useTodos';
 import TodoComponent from '@/components/todos/Todo';
 
 export default function Todos() {
+  const navigate = useNavigate();
   const { data: todos, isPending, isError } = useTodos();
   const deleteTodoMutation = useDeleteTodo();
 
-  const handleDelete = (todoId: string) => {
+  const handleDelete = (todoId: number) => {
     deleteTodoMutation.mutate(todoId);
+  };
+
+  const handleEdit = (id: number) => {
+    navigate({ to: '/todos/$id/edit', params: { id: String(id) } });
   };
 
   if (isPending) return <div>Pending...</div>;
@@ -22,6 +28,7 @@ export default function Todos() {
             key={todo.id}
             todo={todo}
             handleDelete={handleDelete}
+            handleEdit={handleEdit}
           />
         ))}
         {todos.length === 0 && (
