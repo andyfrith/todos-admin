@@ -1,237 +1,276 @@
 # Form Patterns Documentation
 
-This document outlines the form implementation patterns used in this application, based on example sign-up form implementation.
+This document outlines the form implementation patterns used in this application, based on the Todo Admin add/edit form implementation.
 
 ## Core Dependencies
 
 ```typescript
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import type { SubmitHandler } from 'react-hook-form';
+import type { Todo } from '@/lib/schema';
+import { TodoSchema, TodoTypeSchema } from '@/lib/schema';
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '~/components/ui/form';
+  Field,
+  FieldContent,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 ```
 
 ## Schema Definition Pattern
 
-Forms use Zod for validation schemas with TypeScript inference:
+Forms use Zod for validation schemas with TypeScript inference. Shared schema lives in `~/lib/schema.ts`:
 
 ```typescript
-const signUpSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email({ message: 'Please enter a valid email address' }),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+export const TodoTypeSchema = z.enum([
+  'ACTIVE',
+  'CULTURAL',
+  'RESTORATIVE',
+  'PLANNING',
+]);
+
+export type TodoType = z.infer<typeof TodoTypeSchema>;
+
+export const TodoSchema = z.object({
+  id: z.number().optional(),
+  title: z
+    .string()
+    .min(5, 'Title must be at least 5 characters.')
+    .max(32, 'Title must be at most 32 characters.'),
+  todoType: TodoTypeSchema.optional(),
+  completed: z.boolean().optional(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
 });
 
-type SignUpForm = z.infer<typeof signUpSchema>;
+export type Todo = z.infer<typeof TodoSchema>;
 ```
 
 ## Form Setup Pattern
 
-Forms are initialized with react-hook-form and Zod resolver:
+Forms are initialized with react-hook-form and Zod resolver. Default values match the Todo shape; in edit mode they are pre-filled from the existing todo:
 
 ```typescript
-const form = useForm<SignUpForm>({
-  resolver: zodResolver(signUpSchema),
-  defaultValues: {
-    name: '',
-    email: '',
-    password: '',
+const form = useForm<Todo>({
+  resolver: zodResolver(TodoSchema as never),
+  defaultValues: todo ?? {
+    title: '',
+    todoType: 'ACTIVE',
+    completed: false,
   },
 });
 ```
 
 ## State Management Pattern
 
-Forms manage loading, error states, and UI state:
+Loading state is supplied by the parent (e.g. TanStack Query mutation). The form disables submit when pending or when there are validation errors:
 
 ```typescript
-const [isLoading, setIsLoading] = useState(false);
-const [authError, setAuthError] = useState('');
-const [showPassword, setShowPassword] = useState(false); // For password fields
+// Parent (e.g. AddTodo) passes mutation state
+<TodoForm
+  onFormSubmit={(data: Todo) => createTodoMutation.mutate(data)}
+  isPending={createTodoMutation.isPending}
+/>
+
+// Form disables submit when pending or invalid
+disabled={isPending || Object.keys(form.formState.errors).length > 0}
 ```
 
 ## Submit Handler Pattern
 
-Async form submission with error handling:
+Submit passes values to a parent callback; in add mode the form resets on success; in edit mode the parent may navigate or show toast:
 
 ```typescript
-const onSubmit = async (data: SignUpForm) => {
-  setIsLoading(true);
-  setAuthError('');
-
-  try {
-    const result = await authClient.signUp.email({
-      email: data.email,
-      password: data.password,
-      name: data.name,
-    });
-
-    if (result.error) {
-      setAuthError(result.error.message || 'Sign up failed');
-    } else {
-      router.navigate({ to: '/' });
-    }
-  } catch (err) {
-    setAuthError('An unexpected error occurred');
-  } finally {
-    setIsLoading(false);
-  }
+const onSubmit: SubmitHandler<Todo> = (data: Todo) => {
+  onFormSubmit({ ...todo, ...data } as Todo);
+  // Add-only form may reset after submit:
+  // form.reset();
 };
 ```
 
 ## Form Structure Pattern
 
-Forms use shadcn/ui Form components with controlled fields:
+Forms use custom Field components with react-hook-form: `register` for simple inputs, `Controller` for Select and Checkbox. Layout uses `FieldGroup` and semantic `FieldSet` for grouped controls:
 
 ```typescript
-<Form {...form}>
-  <form onSubmit={form.handleSubmit(onSubmit)}>
-    <div className="grid gap-4">
-      {/* Error Display */}
-      {authError && (
-        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3">
-          <p className="text-sm text-destructive">{authError}</p>
-        </div>
+<form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-2">
+  <FieldGroup>
+    {/* Title: Controller with Input (or register for plain input) */}
+    <Controller
+      control={form.control}
+      name="title"
+      render={({ field, fieldState }) => (
+        <Field data-invalid={fieldState.invalid}>
+          <FieldLabel htmlFor={field.name}>Title</FieldLabel>
+          <Input
+            {...field}
+            id={field.name}
+            aria-invalid={fieldState.invalid}
+            placeholder="Add a new todo..."
+          />
+          {fieldState.invalid && (
+            <FieldError errors={[fieldState.error]} />
+          )}
+        </Field>
       )}
+    />
 
-      {/* Form Fields */}
-      <FormField
-        control={form.control}
-        name="email"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Email</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="name@example.com"
-                type="email"
-                autoComplete="email"
-                autoCapitalize="none"
-                autoCorrect="off"
-                disabled={isLoading}
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+    {/* Type: Select — see Select Field Pattern */}
+    {/* Status: FieldSet + Checkbox — see Checkbox Field Pattern */}
 
-      {/* Submit Button */}
-      <Button disabled={isLoading} type="submit">
-        {isLoading && (
-          <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-        )}
-        {isLoading ? "Creating account..." : "Create Account"}
-      </Button>
-    </div>
-  </form>
-</Form>
+    <Button type="submit" disabled={isPending || hasErrors}>
+      {isPending ? 'Adding...' : 'Add Todo'}
+    </Button>
+  </FieldGroup>
+</form>
 ```
 
-## Password Field Pattern
+## Select Field Pattern
 
-Password fields include show/hide toggle functionality:
+Select fields use `Controller` and shadcn `Select`; options are driven by the schema enum:
 
 ```typescript
-<FormField
+<Controller
   control={form.control}
-  name="password"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Password</FormLabel>
-      <FormControl>
-        <div className="relative">
-          <Input
-            placeholder="Create a password"
-            type={showPassword ? "text" : "password"}
-            autoComplete="new-password"
-            disabled={isLoading}
-            className="pr-10"
-            {...field}
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-            disabled={isLoading}
-            aria-label={showPassword ? "Hide password" : "Show password"}
-          >
-            {showPassword ? (
-              <EyeOff className="h-4 w-4" />
-            ) : (
-              <Eye className="h-4 w-4" />
-            )}
-          </button>
-        </div>
-      </FormControl>
-      <FormMessage />
-    </FormItem>
+  name="todoType"
+  render={({ field: { onChange, onBlur, ...field }, fieldState }) => (
+    <Field data-invalid={fieldState.invalid}>
+      <FieldLabel htmlFor={field.name}>Type</FieldLabel>
+      <Select {...field} onValueChange={onChange}>
+        <SelectTrigger
+          aria-invalid={fieldState.invalid}
+          onBlur={onBlur}
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {TodoTypeSchema.options.map((type) => (
+            <SelectItem key={type as string} value={type as string}>
+              {type as string}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      {fieldState.invalid && (
+        <FieldError errors={[fieldState.error]} />
+      )}
+    </Field>
   )}
 />
 ```
 
-## Input Attributes Pattern
+## Checkbox Field Pattern
 
-Standard input attributes for better UX:
+Checkbox fields use `Controller` with `FieldSet`, `FieldLegend`, and horizontal `Field` for label + checkbox:
 
 ```typescript
-// Email field
-type="email"
-autoComplete="email"
-autoCapitalize="none"
-autoCorrect="off"
+<FieldSet>
+  <FieldContent>
+    <FieldLegend>Status</FieldLegend>
+    <FieldDescription>Have you completed this todo?</FieldDescription>
+  </FieldContent>
+  <FieldGroup>
+    <Controller
+      control={form.control}
+      name="completed"
+      render={({ field: { onChange, value, ...field }, fieldState }) => (
+        <Field data-invalid={fieldState.invalid} orientation="horizontal">
+          <Checkbox
+            {...field}
+            id={field.name}
+            checked={value}
+            onCheckedChange={onChange}
+            aria-invalid={fieldState.invalid}
+          />
+          <FieldContent>
+            <FieldLabel htmlFor={field.name}>Completed</FieldLabel>
+            {fieldState.invalid && (
+              <FieldError errors={[fieldState.error]} />
+            )}
+          </FieldContent>
+        </Field>
+      )}
+    />
+  </FieldGroup>
+</FieldSet>
+```
 
-// Name field
+## Input Attributes Pattern
+
+Standard input attributes for Todo fields:
+
+```typescript
+// Title (text)
 type="text"
-autoComplete="given-name"
+placeholder="Add a new todo..." // or "Edit todo..." in edit mode
+id={field.name}
+aria-invalid={fieldState.invalid}
 
-// Password field
-type={showPassword ? "text" : "password"}
-autoComplete="new-password" // or "current-password" for login
+// Select (todoType)
+aria-invalid={fieldState.invalid}
+onBlur from Controller for touch/blur tracking
+
+// Checkbox (completed)
+checked={value}
+onCheckedChange={onChange}
+aria-invalid={fieldState.invalid}
 ```
 
 ## Error Display Pattern
 
-Global form errors are displayed above the form:
+Field-level errors are shown via `FieldError` next to each controlled field. A summary of all current validation errors is shown below the form:
 
 ```typescript
-{authError && (
-  <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3">
-    <p className="text-sm text-destructive">{authError}</p>
+{Object.keys(form.formState.errors).length > 0 && (
+  <div className="mt-8 p-6 rounded-lg border" style={{ ... }}>
+    <h3 className="text-lg font-semibold mb-2 text-indigo-200">Errors</h3>
+    <ul className="list-disc list-inside space-y-2 text-indigo-300/80">
+      {Object.keys(form.formState.errors).map((key) => (
+        <li key={key}>
+          {form.formState.errors[key as keyof FieldErrors<Todo>]?.message}
+        </li>
+      ))}
+    </ul>
   </div>
 )}
 ```
 
-Field-level errors are automatically handled by `<FormMessage />` from the validation schema.
-
 ## Loading States Pattern
 
-Buttons show loading indicators and disable during submission:
+Submit button reflects pending state from the parent and disables when there are validation errors:
 
 ```typescript
-<Button disabled={isLoading} type="submit">
-  {isLoading && (
-    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-  )}
-  {isLoading ? "Creating account..." : "Create Account"}
+<Button
+  type="submit"
+  disabled={isPending || Object.keys(form.formState.errors).length > 0}
+>
+  {isPending ? 'Adding...' : 'Add Todo'}
 </Button>
 ```
 
+In the shared TodoForm (add + edit), labels switch by mode: "Add Todo" / "Adding..." vs "Update Todo" / "Updating...".
+
 ## Key Conventions
 
-1. **Schema First**: Define Zod schema before form setup
-2. **Type Safety**: Use `z.infer<typeof schema>` for form types
-3. **Error Handling**: Separate API errors from validation errors
-4. **Loading States**: Disable form during submission
-5. **Accessibility**: Include proper ARIA labels and autocomplete attributes
-6. **UX Enhancements**: Password visibility toggle, loading indicators
-7. **Consistent Styling**: Use shadcn/ui components for consistent appearance
-8. **Enabled Buttons** keep buttons clickable and show sonner toast on errors
+1. **Schema first**: Define Zod schema in `~/lib/schema.ts` and export type via `z.infer<typeof TodoSchema>`.
+2. **Type safety**: Use `Todo` (or `z.infer<typeof TodoSchema>`) for form types and submit handlers.
+3. **Controlled vs register**: Use `Controller` for Select and Checkbox; use `register` or `Controller` for text inputs.
+4. **Loading from parent**: `isPending` is passed in from the parent (e.g. mutation) so the form stays presentational.
+5. **Error handling**: Field-level errors via `FieldError`; optional summary block for all errors below the form.
+6. **Accessibility**: `aria-invalid`, `htmlFor`/`id`, and semantic `FieldSet`/`FieldLegend` where appropriate.
+7. **Shared form**: One TodoForm supports both add (no `todo`) and edit (`todo` provided); default values and submit labels vary by mode.
+8. **Consistent styling**: Use `~/components/ui/field`, shadcn Select/Checkbox/Button, and shared border/background styles for Todo Admin.
