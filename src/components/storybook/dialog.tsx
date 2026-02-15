@@ -1,10 +1,10 @@
-import React from 'react'
+import React from 'react';
 
 export interface DialogProps {
-  title: string
-  children: React.ReactNode
-  footer?: React.ReactNode
-  className?: string
+  title: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+  className?: string;
 }
 
 export const Dialog: React.FC<DialogProps> = ({
@@ -29,5 +29,5 @@ export const Dialog: React.FC<DialogProps> = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};

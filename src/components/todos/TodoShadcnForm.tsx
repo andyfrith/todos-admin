@@ -208,7 +208,9 @@ export default function TodoShadcnForm({
       </form>
       {Object.keys(form.formState.errors).length > 0 && (
         <div className="mt-8 rounded-lg border border-border bg-muted/50 p-6 dark:border-[rgba(93,103,227,0.2)] dark:bg-[rgba(93,103,227,0.05)]">
-          <h3 className="mb-2 text-lg font-semibold text-foreground dark:text-indigo-200">Errors</h3>
+          <h3 className="mb-2 text-lg font-semibold text-foreground dark:text-indigo-200">
+            Errors
+          </h3>
           <div className="space-y-2 text-sm">
             <ul className="list-inside list-disc space-y-2 text-muted-foreground dark:text-indigo-300/80">
               {Object.keys(form.formState.errors).map((key) => (

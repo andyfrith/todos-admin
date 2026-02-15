@@ -1,15 +1,15 @@
-import React from 'react'
+import React from 'react';
 
 export interface SliderProps {
-  label: string
-  id: string
-  value?: number
-  onChange?: (value: number) => void
-  min?: number
-  max?: number
-  step?: number
-  showValue?: boolean
-  className?: string
+  label: string;
+  id: string;
+  value?: number;
+  onChange?: (value: number) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+  showValue?: boolean;
+  className?: string;
 }
 
 export const Slider: React.FC<SliderProps> = ({
@@ -53,5 +53,5 @@ export const Slider: React.FC<SliderProps> = ({
         <span>{max}</span>
       </div>
     </div>
-  )
-}
+  );
+};

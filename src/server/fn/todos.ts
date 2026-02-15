@@ -16,11 +16,7 @@ export const createTodo = createServerFn({
   method: 'POST',
 })
   .inputValidator(
-    (data: {
-      title: string;
-      summary?: string;
-      description?: string;
-    }) => data,
+    (data: { title: string; summary?: string; description?: string }) => data,
   )
   .handler(async ({ data }) => {
     await db.insert(todos).values({

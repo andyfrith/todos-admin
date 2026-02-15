@@ -1,7 +1,7 @@
-import { fn } from 'storybook/test'
+import { fn } from 'storybook/test';
 
-import { RadioGroup } from './radio-group'
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import { RadioGroup } from './radio-group';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'Form/RadioGroup',
@@ -11,10 +11,10 @@ const meta = {
   },
   tags: ['autodocs'],
   args: { onChange: fn() },
-} satisfies Meta<typeof RadioGroup>
+} satisfies Meta<typeof RadioGroup>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
@@ -25,7 +25,7 @@ export const Default: Story = {
       { value: 'part-time', label: 'Part Time' },
     ],
   },
-}
+};
 
 export const Selected: Story = {
   args: {
@@ -37,7 +37,7 @@ export const Selected: Story = {
     ],
     value: 'full-time',
   },
-}
+};
 
 export const MultipleOptions: Story = {
   args: {
@@ -50,4 +50,4 @@ export const MultipleOptions: Story = {
     ],
     value: 'pro',
   },
-}
+};

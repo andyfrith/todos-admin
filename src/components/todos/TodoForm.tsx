@@ -93,9 +93,7 @@ export default function TodoForm({
               placeholder="Brief summary (optional)"
               className="flex-1 resize-none rounded-lg border border-input bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring dark:border-[rgba(93,103,227,0.3)] dark:bg-[rgba(93,103,227,0.1)] dark:text-white dark:placeholder:text-indigo-300/50"
             />
-            {errors.summary && (
-              <FieldError errors={[errors.summary]} />
-            )}
+            {errors.summary && <FieldError errors={[errors.summary]} />}
           </Field>
           <Field data-invalid={!!errors.description}>
             <FieldLabel htmlFor="description">Description</FieldLabel>
@@ -106,9 +104,7 @@ export default function TodoForm({
               placeholder="Description (optional)"
               className="flex-1 resize-none rounded-lg border border-input bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring dark:border-[rgba(93,103,227,0.3)] dark:bg-[rgba(93,103,227,0.1)] dark:text-white dark:placeholder:text-indigo-300/50"
             />
-            {errors.description && (
-              <FieldError errors={[errors.description]} />
-            )}
+            {errors.description && <FieldError errors={[errors.description]} />}
           </Field>
           <Controller
             control={control}
@@ -176,7 +172,9 @@ export default function TodoForm({
       </form>
       {Object.keys(errors).length > 0 && (
         <div className="mt-8 rounded-lg border border-border bg-muted/50 p-6 dark:border-[rgba(93,103,227,0.2)] dark:bg-[rgba(93,103,227,0.05)]">
-          <h3 className="mb-2 text-lg font-semibold text-foreground dark:text-indigo-200">Errors</h3>
+          <h3 className="mb-2 text-lg font-semibold text-foreground dark:text-indigo-200">
+            Errors
+          </h3>
           <div className="space-y-2 text-sm">
             <ul className="list-inside list-disc space-y-2 text-muted-foreground dark:text-indigo-300/80">
               {Object.keys(errors).map((key) => (
