@@ -9,7 +9,7 @@ This PRD defines a **production‑ready starter template** built with TanStack S
 - **Read the entire document** before generating code. Use sections 2 (Scope), 4 (Data Model), 6 (Flows), 7 (Requirements), 8 (API), and 17 (Implementation order) as primary references.
 - **Follow the implementation order** in section 17 so that schema, server functions, hooks, and UI are built in dependency order.
 - **Respect in-scope vs out-of-scope** (section 2). Do not add auth, roles, or multi-tenancy unless the user explicitly requests them.
-- **Use linked documentation** when implementing: `docs/technical/architecture.md` for layer boundaries and file layout; `docs/ux/forms-react-hook-form-shadcn.md` for form patterns; `docs/e2e-testing.md` for E2E test setup and conventions.
+- **Use linked documentation** when implementing: `docs/technical/architecture.md` for layer boundaries and file layout; `docs/deployment.md` for Cloudflare Workers deploy and env config; `docs/ux/forms-react-hook-form-shadcn.md` for form patterns; `docs/e2e-testing.md` for E2E test setup and conventions.
 - **Verify against the acceptance checklist** in section 16 (AI Implementation Notes) before considering the task complete.
 - **Prefer existing patterns** in the codebase over introducing new libraries or patterns not listed in this PRD.
 
@@ -74,7 +74,9 @@ This PRD defines a **production‑ready starter template** built with TanStack S
 - `pnpm install` — install dependencies
 - `pnpm dev` — start dev server (e.g. port 3000)
 - `pnpm build` — production build
-- `pnpm preview` — preview production build
+- `pnpm preview` — preview production build (Workers runtime)
+- `pnpm deploy` — build and deploy to Cloudflare Workers (see `docs/deployment.md`)
+- `pnpm cf-typegen` — generate Wrangler types for bindings
 - `pnpm lint` — run ESLint
 - `pnpm test` — run unit/integration tests (Vitest)
 - `pnpm run test:e2e` — run E2E tests (Playwright); `pnpm run test:e2e:ui` for UI mode
@@ -86,26 +88,26 @@ This PRD defines a **production‑ready starter template** built with TanStack S
 ## Environments
 
 - Local development (e.g. `pnpm dev`, port 3000)
-- Production build (Node runtime; `pnpm build`, `pnpm preview`)
+- Production build and deploy (Cloudflare Workers; `pnpm build`, `pnpm preview`, `pnpm deploy` — see `docs/deployment.md`)
 
 ## Project structure (key paths for implementation)
 
 Implement and place code in these locations so the app stays consistent with the modular architecture (see `docs/technical/architecture.md`):
 
-| Purpose | Path | Notes |
-|--------|------|--------|
-| DB schema | `src/db/schema.ts` | Drizzle table definitions. Single source of truth for DB. |
-| DB connection | `src/db/index.ts` | Drizzle client; reads env for connection URL. |
-| Migrations | `drizzle.config.ts`, `drizzle/` | Config and migration outputs. Use `pnpm db:generate`, `pnpm db:push` or `pnpm db:migrate`. |
-| App types & validation | `src/lib/schema.ts` | Zod schemas and inferred types (e.g. `Todo`, `TodoSchema`). Use for forms and server I/O. |
-| Server API | `src/server/fn/todos.ts` | Server functions per domain (e.g. `getTodos`, `createTodo`, `updateTodo`, `deleteTodo`). |
-| Query options | `src/queries/todos.tsx` | TanStack Query `queryOptions` / `mutationOptions` (queryKey, queryFn). |
-| Data hooks | `src/hooks/useTodos.ts` | React hooks that call server functions and use query options; handle cache invalidation and toasts. |
-| Feature UI | `src/components/todos/` | List, item, add form, edit form, shared form component. |
-| Shared UI | `src/components/ui/` | Shadcn primitives (button, input, checkbox, select, field, etc.). |
-| Routes | `src/routes/` | File-based: `__root.tsx`, `index.tsx`, `todos/route.tsx`, `todos/index.tsx`, `todos/add.tsx`, `todos/$id/edit.tsx`. |
-| Router | `src/router.tsx` | Uses `routeTree` and TanStack Query context; do not call from app code. |
-| Styles | `src/styles.css` | Tailwind + theme variables. |
+| Purpose                | Path                            | Notes                                                                                                               |
+| ---------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| DB schema              | `src/db/schema.ts`              | Drizzle table definitions. Single source of truth for DB.                                                           |
+| DB connection          | `src/db/index.ts`               | Drizzle client; reads env for connection URL.                                                                       |
+| Migrations             | `drizzle.config.ts`, `drizzle/` | Config and migration outputs. Use `pnpm db:generate`, `pnpm db:push` or `pnpm db:migrate`.                          |
+| App types & validation | `src/lib/schema.ts`             | Zod schemas and inferred types (e.g. `Todo`, `TodoSchema`). Use for forms and server I/O.                           |
+| Server API             | `src/server/fn/todos.ts`        | Server functions per domain (e.g. `getTodos`, `createTodo`, `updateTodo`, `deleteTodo`).                            |
+| Query options          | `src/queries/todos.tsx`         | TanStack Query `queryOptions` / `mutationOptions` (queryKey, queryFn).                                              |
+| Data hooks             | `src/hooks/useTodos.ts`         | React hooks that call server functions and use query options; handle cache invalidation and toasts.                 |
+| Feature UI             | `src/components/todos/`         | List, item, add form, edit form, shared form component.                                                             |
+| Shared UI              | `src/components/ui/`            | Shadcn primitives (button, input, checkbox, select, field, etc.).                                                   |
+| Routes                 | `src/routes/`                   | File-based: `__root.tsx`, `index.tsx`, `todos/route.tsx`, `todos/index.tsx`, `todos/add.tsx`, `todos/$id/edit.tsx`. |
+| Router                 | `src/router.tsx`                | Uses `routeTree` and TanStack Query context; do not call from app code.                                             |
+| Styles                 | `src/styles.css`                | Tailwind + theme variables.                                                                                         |
 
 **Layer rule:** Presentation (routes, components) → hooks → server functions → database. Server and DB must not import from routes or components.
 
@@ -122,16 +124,16 @@ The **database schema** is the source of truth for persistence (Drizzle in `src/
 
 ## Entity: Todo
 
-| Field       | Type      | Constraints |
-|-------------|-----------|-------------|
+| Field       | Type      | Constraints                                                                 |
+| ----------- | --------- | --------------------------------------------------------------------------- |
 | id          | integer   | Primary key, auto-generated (e.g. `generatedAlwaysAsIdentity()` in Drizzle) |
-| title       | string    | Required. Min 5, max 32 characters. |
-| summary     | string    | Optional. Min 5, max 250 characters when provided. |
-| description | string    | Optional. Min 5, max 250 characters when provided. |
-| todoType    | TodoType  | Optional; default `ACTIVE`. |
-| completed   | boolean   | Default `false`. |
-| createdAt   | timestamp | Default now. |
-| updatedAt   | timestamp | Default now; update on edit. |
+| title       | string    | Required. Min 5, max 32 characters.                                         |
+| summary     | string    | Optional. Min 5, max 250 characters when provided.                          |
+| description | string    | Optional. Min 5, max 250 characters when provided.                          |
+| todoType    | TodoType  | Optional; default `ACTIVE`.                                                 |
+| completed   | boolean   | Default `false`.                                                            |
+| createdAt   | timestamp | Default now.                                                                |
+| updatedAt   | timestamp | Default now; update on edit.                                                |
 
 **Validation (Zod in `lib/schema.ts`):** Title must be 5–32 characters. Summary and description, when provided, must be 5–250 characters with clear error messages. Use the same schema for client forms and server input validation where applicable.
 
