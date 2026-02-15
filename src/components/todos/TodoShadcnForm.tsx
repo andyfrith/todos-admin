@@ -70,11 +70,7 @@ export default function TodoShadcnForm({
                   {...field}
                   id={field.name}
                   aria-invalid={fieldState.invalid}
-                  className="flex-1 px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all text-white placeholder-indigo-300/50"
-                  style={{
-                    background: 'rgba(93, 103, 227, 0.1)',
-                    borderColor: 'rgba(93, 103, 227, 0.3)',
-                  }}
+                  className="flex-1 dark:border-[rgba(93,103,227,0.3)] dark:bg-[rgba(93,103,227,0.1)] dark:text-white dark:placeholder:text-indigo-300/50"
                   placeholder="Add a new todo..."
                 />
                 {fieldState.invalid && (
@@ -95,11 +91,7 @@ export default function TodoShadcnForm({
                   id={field.name}
                   aria-invalid={fieldState.invalid}
                   rows={3}
-                  className="flex-1 px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all text-white placeholder-indigo-300/50 resize-none"
-                  style={{
-                    background: 'rgba(93, 103, 227, 0.1)',
-                    borderColor: 'rgba(93, 103, 227, 0.3)',
-                  }}
+                  className="flex-1 resize-none dark:border-[rgba(93,103,227,0.3)] dark:bg-[rgba(93,103,227,0.1)] dark:text-white dark:placeholder:text-indigo-300/50"
                   placeholder="Brief summary (optional)"
                 />
                 {fieldState.invalid && (
@@ -120,11 +112,7 @@ export default function TodoShadcnForm({
                   id={field.name}
                   aria-invalid={fieldState.invalid}
                   rows={6}
-                  className="flex-1 px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all text-white placeholder-indigo-300/50 resize-none"
-                  style={{
-                    background: 'rgba(93, 103, 227, 0.1)',
-                    borderColor: 'rgba(93, 103, 227, 0.3)',
-                  }}
+                  className="flex-1 resize-none dark:border-[rgba(93,103,227,0.3)] dark:bg-[rgba(93,103,227,0.1)] dark:text-white dark:placeholder:text-indigo-300/50"
                   placeholder="Description (optional)"
                 />
                 {fieldState.invalid && (
@@ -143,12 +131,7 @@ export default function TodoShadcnForm({
                   <SelectTrigger
                     aria-invalid={fieldState.invalid}
                     onBlur={onBlur}
-                    className="flex-1 px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all text-white placeholder-indigo-300/50"
-                    style={{
-                      background: 'rgba(93, 103, 227, 0.1)',
-                      borderColor: 'rgba(93, 103, 227, 0.3)',
-                      //   focusRing: 'rgba(93, 103, 227, 0.5)',
-                    }}
+                    className="flex-1 dark:border-[rgba(93,103,227,0.3)] dark:bg-[rgba(93,103,227,0.1)] dark:text-white dark:placeholder:text-indigo-300/50"
                   >
                     <SelectValue />
                   </SelectTrigger>
@@ -214,11 +197,7 @@ export default function TodoShadcnForm({
             </FieldGroup>
           </FieldSet>
           <Button
-            className="px-6 py-3 font-semibold rounded-lg shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105 active:scale-95 whitespace-nowrap"
-            style={{
-              background: 'linear-gradient(135deg, #5d67e3 0%, #8b5cf6 100%)',
-              color: 'white',
-            }}
+            className="whitespace-nowrap px-6 py-3 font-semibold shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95 dark:bg-[linear-gradient(135deg,#5d67e3_0%,#8b5cf6_100%)] dark:text-white"
             disabled={
               isPending || Object.keys(form.formState.errors).length > 0
             }
@@ -228,16 +207,10 @@ export default function TodoShadcnForm({
         </FieldGroup>
       </form>
       {Object.keys(form.formState.errors).length > 0 && (
-        <div
-          className="mt-8 p-6 rounded-lg border"
-          style={{
-            background: 'rgba(93, 103, 227, 0.05)',
-            borderColor: 'rgba(93, 103, 227, 0.2)',
-          }}
-        >
-          <h3 className="text-lg font-semibold mb-2 text-indigo-200">Errors</h3>
+        <div className="mt-8 rounded-lg border border-border bg-muted/50 p-6 dark:border-[rgba(93,103,227,0.2)] dark:bg-[rgba(93,103,227,0.05)]">
+          <h3 className="mb-2 text-lg font-semibold text-foreground dark:text-indigo-200">Errors</h3>
           <div className="space-y-2 text-sm">
-            <ul className="list-disc list-inside space-y-2 text-indigo-300/80">
+            <ul className="list-inside list-disc space-y-2 text-muted-foreground dark:text-indigo-300/80">
               {Object.keys(form.formState.errors).map((key) => (
                 <li key={key}>
                   {

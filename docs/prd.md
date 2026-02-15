@@ -35,7 +35,7 @@ This PRD defines a **production‑ready starter template** built with TanStack S
 - Postgres database via Drizzle ORM
 - Minimal Todo application example (CRUD)
 - Shadcn UI with Tailwind CSS v4
-- Dark and light theme support
+- Theme support: light, dark, system (OS preference), and sunshine (warm color scheme)
 - ESLint configured and passing
 - Storybook for UI component development
 - Unit/integration tests (Vitest); E2E tests (Playwright) for routes and navigation
@@ -215,10 +215,11 @@ Enum: `ACTIVE`, `CULTURAL`, `RESTORATIVE`, `PLANNING`. Stored as text in DB; val
 
 ## Theming
 
-- Must support **light** and **dark** themes
-- Theme persisted in local storage or cookie
-- Theme toggle available in UI
-- Styling must follow Shadcn conventions
+- Must support **light**, **dark**, **system** (follows OS preference), and **sunshine** (warm color scheme) themes
+- Theme persisted in local storage (via next-themes)
+- Theme selector available in UI (aligned right in Header)
+- Components use semantic color variables (e.g. `bg-background`, `text-foreground`) to reflect all themes
+- Styling must follow Shadcn conventions; see `docs/ux/Theming.md`
 
 ## UI System
 
@@ -415,7 +416,7 @@ If the project does not yet include Playwright, prioritize Vitest and Storybook;
 - [ ] DB: schema exists, migrations applied or pushed, env vars set; can create/read/update/delete a todo.
 - [ ] All four Todo routes work: list, add, edit, delete (and list updates after mutations).
 - [ ] Loading, empty, and error states are handled in the UI.
-- [ ] Theme (light/dark) works if in scope; theme toggle present if required.
+- [ ] Theme (light/dark/system/sunshine) works; theme selector present in Header.
 - [ ] Storybook runs and required components have stories (if in scope).
 - [ ] Tests (unit/integration or E2E per scope) pass.
 
@@ -441,6 +442,7 @@ Implement in this order so dependencies exist before use:
 
 - **Architecture:** `docs/technical/architecture.md` — modular layers, directory layout, data flow, server functions, DB, hooks, queries, routes. Reference when adding or moving code.
 - **Forms:** `docs/ux/forms-react-hook-form-shadcn.md` — React Hook Form, Zod resolver, Shadcn field components, and form patterns for add/edit Todo.
+- **Theming:** `docs/ux/Theming.md` — theme options (light, dark, system, sunshine), CSS variables, and adding new color schemes.
 
 ---
 

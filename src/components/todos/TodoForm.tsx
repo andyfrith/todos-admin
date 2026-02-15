@@ -81,11 +81,7 @@ export default function TodoForm({
               type="text"
               {...register('title')}
               placeholder={placeholder}
-              className="flex-1 px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all text-white placeholder-indigo-300/50"
-              style={{
-                background: 'rgba(93, 103, 227, 0.1)',
-                borderColor: 'rgba(93, 103, 227, 0.3)',
-              }}
+              className="flex-1 rounded-lg border border-input bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring dark:border-[rgba(93,103,227,0.3)] dark:bg-[rgba(93,103,227,0.1)] dark:text-white dark:placeholder:text-indigo-300/50"
             />
           </div>
           <Field data-invalid={!!errors.summary}>
@@ -95,11 +91,7 @@ export default function TodoForm({
               id="summary"
               rows={3}
               placeholder="Brief summary (optional)"
-              className="flex-1 px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all text-white placeholder-indigo-300/50 resize-none"
-              style={{
-                background: 'rgba(93, 103, 227, 0.1)',
-                borderColor: 'rgba(93, 103, 227, 0.3)',
-              }}
+              className="flex-1 resize-none rounded-lg border border-input bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring dark:border-[rgba(93,103,227,0.3)] dark:bg-[rgba(93,103,227,0.1)] dark:text-white dark:placeholder:text-indigo-300/50"
             />
             {errors.summary && (
               <FieldError errors={[errors.summary]} />
@@ -112,11 +104,7 @@ export default function TodoForm({
               id="description"
               rows={6}
               placeholder="Description (optional)"
-              className="flex-1 px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all text-white placeholder-indigo-300/50 resize-none"
-              style={{
-                background: 'rgba(93, 103, 227, 0.1)',
-                borderColor: 'rgba(93, 103, 227, 0.3)',
-              }}
+              className="flex-1 resize-none rounded-lg border border-input bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring dark:border-[rgba(93,103,227,0.3)] dark:bg-[rgba(93,103,227,0.1)] dark:text-white dark:placeholder:text-indigo-300/50"
             />
             {errors.description && (
               <FieldError errors={[errors.description]} />
@@ -136,11 +124,7 @@ export default function TodoForm({
                   <SelectTrigger
                     aria-invalid={fieldState.invalid}
                     onBlur={onBlur}
-                    className="flex-1 max-w-xs px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all text-white"
-                    style={{
-                      background: 'rgba(93, 103, 227, 0.1)',
-                      borderColor: 'rgba(93, 103, 227, 0.3)',
-                    }}
+                    className="max-w-xs flex-1 dark:border-[rgba(93,103,227,0.3)] dark:bg-[rgba(93,103,227,0.1)] dark:text-white dark:placeholder:text-indigo-300/50"
                   >
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
@@ -183,11 +167,7 @@ export default function TodoForm({
             <button
               type="submit"
               disabled={isPending}
-              className="px-6 py-3 font-semibold rounded-lg shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105 active:scale-95 whitespace-nowrap"
-              style={{
-                background: 'linear-gradient(135deg, #5d67e3 0%, #8b5cf6 100%)',
-                color: 'white',
-              }}
+              className="whitespace-nowrap rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95 disabled:opacity-50 dark:bg-[linear-gradient(135deg,#5d67e3_0%,#8b5cf6_100%)] dark:text-white"
             >
               {isPending ? effectivePendingLabel : effectiveSubmitLabel}
             </button>
@@ -195,16 +175,10 @@ export default function TodoForm({
         </FieldGroup>
       </form>
       {Object.keys(errors).length > 0 && (
-        <div
-          className="mt-8 p-6 rounded-lg border"
-          style={{
-            background: 'rgba(93, 103, 227, 0.05)',
-            borderColor: 'rgba(93, 103, 227, 0.2)',
-          }}
-        >
-          <h3 className="text-lg font-semibold mb-2 text-indigo-200">Errors</h3>
+        <div className="mt-8 rounded-lg border border-border bg-muted/50 p-6 dark:border-[rgba(93,103,227,0.2)] dark:bg-[rgba(93,103,227,0.05)]">
+          <h3 className="mb-2 text-lg font-semibold text-foreground dark:text-indigo-200">Errors</h3>
           <div className="space-y-2 text-sm">
-            <ul className="list-disc list-inside space-y-2 text-indigo-300/80">
+            <ul className="list-inside list-disc space-y-2 text-muted-foreground dark:text-indigo-300/80">
               {Object.keys(errors).map((key) => (
                 <li key={key}>
                   {errors[key as keyof FieldErrors<Todo>]?.message}
