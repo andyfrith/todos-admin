@@ -1,17 +1,17 @@
-import React from 'react'
+import React from 'react';
 
 export interface RadioOption {
-  value: string
-  label: string
+  value: string;
+  label: string;
 }
 
 export interface RadioGroupProps {
-  label: string
-  name: string
-  options: Array<RadioOption>
-  value?: string
-  onChange?: (value: string) => void
-  className?: string
+  label: string;
+  name: string;
+  options: Array<RadioOption>;
+  value?: string;
+  onChange?: (value: string) => void;
+  className?: string;
 }
 
 export const RadioGroup: React.FC<RadioGroupProps> = ({
@@ -48,5 +48,5 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
         ))}
       </div>
     </div>
-  )
-}
+  );
+};

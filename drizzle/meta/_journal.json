@@ -43,6 +43,13 @@
       "when": 1770914361653,
       "tag": "0005_nice_logan",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1771183238546,
+      "tag": "0006_third_red_ghost",
+      "breakpoints": true
     }
   ]
 }

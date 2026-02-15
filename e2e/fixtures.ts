@@ -7,7 +7,9 @@ import type { Page } from '@playwright/test';
  */
 export async function openNav(page: Page): Promise<void> {
   await page.getByRole('button', { name: 'Open menu' }).click();
-  await page.getByRole('heading', { name: 'Navigation' }).waitFor({ state: 'visible' });
+  await page
+    .getByRole('heading', { name: 'Navigation' })
+    .waitFor({ state: 'visible' });
 }
 
 /**

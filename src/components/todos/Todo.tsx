@@ -39,11 +39,11 @@ export default function Todo({
         </div>
         {(todo.summary || todo.description) && (
           <div className="mt-1 space-y-0.5 text-sm text-muted-foreground dark:text-indigo-300/80">
-            {todo.summary && (
-              <p className="line-clamp-2">{todo.summary}</p>
-            )}
+            {todo.summary && <p className="line-clamp-2">{todo.summary}</p>}
             {todo.description && todo.description !== todo.summary && (
-              <p className="line-clamp-2 dark:text-indigo-300/70">{todo.description}</p>
+              <p className="line-clamp-2 dark:text-indigo-300/70">
+                {todo.description}
+              </p>
             )}
           </div>
         )}

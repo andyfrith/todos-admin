@@ -8,12 +8,12 @@ The application uses [next-themes](https://github.com/pacocoursey/next-themes) f
 
 ## Available Themes
 
-| Theme   | Description                                  |
-|---------|----------------------------------------------|
-| Light   | Default light color palette                  |
-| Dark    | Dark mode with inverted colors               |
-| System  | Follows the user's OS light/dark preference  |
-| Sunshine| Warm yellows, golden tones, and cream colors |
+| Theme    | Description                                  |
+| -------- | -------------------------------------------- |
+| Light    | Default light color palette                  |
+| Dark     | Dark mode with inverted colors               |
+| System   | Follows the user's OS light/dark preference  |
+| Sunshine | Warm yellows, golden tones, and cream colors |
 
 ## Architecture
 
@@ -112,9 +112,15 @@ To add a new theme (e.g., "midnight"):
 1. **Add to theme config** in `src/lib/theme.ts`:
 
    ```typescript
-   export const THEMES = ['light', 'dark', 'system', 'sunshine', 'midnight'] as const;
+   export const THEMES = [
+     'light',
+     'dark',
+     'system',
+     'sunshine',
+     'midnight',
+   ] as const;
    export const THEME_LABELS = { /* ... */ midnight: 'Midnight' };
-   export const THEME_ICONS = { /* ... */ midnight: Moon };  // LucideIcon
+   export const THEME_ICONS = { /* ... */ midnight: Moon }; // LucideIcon
    ```
 
 2. **Add CSS variables** in `src/styles.css`:
@@ -139,7 +145,9 @@ The Sonner toaster only supports `light`, `dark`, and `system`. Custom themes (e
 
 ```typescript
 const sonnerTheme =
-  resolvedTheme === 'sunshine' ? 'light' : (resolvedTheme as ToasterProps['theme']);
+  resolvedTheme === 'sunshine'
+    ? 'light'
+    : (resolvedTheme as ToasterProps['theme']);
 ```
 
 ## Key Conventions

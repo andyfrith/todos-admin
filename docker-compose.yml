@@ -6,6 +6,6 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - ./docker-data/db:/var/lib/postgresql/data

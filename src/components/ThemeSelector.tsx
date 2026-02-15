@@ -45,7 +45,9 @@ export default function ThemeSelector() {
         aria-label="Select theme"
       >
         <Icon className="size-4" />
-        <SelectValue placeholder="Theme">{THEME_LABELS[currentTheme]}</SelectValue>
+        <SelectValue placeholder="Theme">
+          {THEME_LABELS[currentTheme]}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         {THEMES.map((t) => {

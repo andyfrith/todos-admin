@@ -1,13 +1,13 @@
-import React from 'react'
+import React from 'react';
 
 export interface InputProps {
-  label: string
-  id: string
-  value?: string
-  onChange?: (value: string) => void
-  placeholder?: string
-  required?: boolean
-  className?: string
+  label: string;
+  id: string;
+  value?: string;
+  onChange?: (value: string) => void;
+  placeholder?: string;
+  required?: boolean;
+  className?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -38,5 +38,5 @@ export const Input: React.FC<InputProps> = ({
         className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors"
       />
     </div>
-  )
-}
+  );
+};

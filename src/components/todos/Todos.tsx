@@ -15,12 +15,24 @@ export default function Todos() {
     navigate({ to: '/todos/$id/edit', params: { id: String(id) } });
   };
 
-  if (isPending) return <div className="text-muted-foreground dark:text-indigo-300/80">Pending...</div>;
+  if (isPending)
+    return (
+      <div className="text-muted-foreground dark:text-indigo-300/80">
+        Pending...
+      </div>
+    );
   if (isError) return <div className="text-destructive">Error!</div>;
-  if (todos.length === 0) return <div className="text-muted-foreground dark:text-indigo-300/80">No todos found</div>;
+  if (todos.length === 0)
+    return (
+      <div className="text-muted-foreground dark:text-indigo-300/80">
+        No todos found
+      </div>
+    );
   return (
     <>
-      <h2 className="mb-4 text-2xl font-bold text-foreground dark:text-indigo-200">Todos</h2>
+      <h2 className="mb-4 text-2xl font-bold text-foreground dark:text-indigo-200">
+        Todos
+      </h2>
 
       <ul className="mb-6 space-y-3">
         {todos.map((todo) => (

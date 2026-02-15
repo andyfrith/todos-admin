@@ -1,6 +1,6 @@
 {
-  "id": "1c6e9bcb-2dbe-49ed-9474-e5721d8870f2",
-  "prevId": "bec5e87c-09f6-4a70-b28a-6b22a8987965",
+  "id": "7bc4d6cb-9590-4dfc-b348-48a52760544e",
+  "prevId": "a4d60548-afc1-4144-be91-b61f068c398e",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -10,9 +10,20 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "todos_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
         },
         "title": {
           "name": "title",
@@ -20,11 +31,24 @@
           "primaryKey": false,
           "notNull": true
         },
+        "summary": {
+          "name": "summary",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "todo_type": {
           "name": "todo_type",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false,
+          "default": "'ACTIVE'"
         },
         "completed": {
           "name": "completed",
