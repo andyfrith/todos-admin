@@ -13,15 +13,15 @@ The codebase implements a **modular architecture** that promotes:
 
 ### Key technologies
 
-| Area | Technology |
-|------|------------|
-| Framework | TanStack Start (React + Vite + Nitro) |
-| Routing | TanStack Router (file-based) |
-| Data & cache | TanStack Query (React Query) |
-| Database | PostgreSQL + Drizzle ORM |
-| Validation & types | Zod + TypeScript |
-| Styling | Tailwind CSS, shadcn-style components |
-| Notifications | Sonner (toasts) |
+| Area               | Technology                                         |
+| ------------------ | -------------------------------------------------- |
+| Framework          | TanStack Start (React + Vite + Cloudflare Workers) |
+| Routing            | TanStack Router (file-based)                       |
+| Data & cache       | TanStack Query (React Query)                       |
+| Database           | PostgreSQL + Drizzle ORM                           |
+| Validation & types | Zod + TypeScript                                   |
+| Styling            | Tailwind CSS, shadcn-style components              |
+| Notifications      | Sonner (toasts)                                    |
 
 ### Directory layout
 
@@ -175,16 +175,41 @@ export const getTodos = createServerFn({ method: 'GET' }).handler(async () => {
 });
 
 export const createTodo = createServerFn({ method: 'POST' })
-  .inputValidator((data: { title: string; summary?: string; description?: string }) => data)
+  .inputValidator(
+    (data: { title: string; summary?: string; description?: string }) => data,
+  )
   .handler(async ({ data }) => {
-    await db.insert(todos).values({ title: data.title, summary: data.summary, description: data.description });
+    await db
+      .insert(todos)
+      .values({
+        title: data.title,
+        summary: data.summary,
+        description: data.description,
+      });
     return { success: true };
   });
 
 export const updateTodo = createServerFn({ method: 'POST' })
-  .inputValidator((data: { id: number; title: string; summary?: string; description?: string; todoType?: string; completed?: boolean }) => data)
+  .inputValidator(
+    (data: {
+      id: number;
+      title: string;
+      summary?: string;
+      description?: string;
+      todoType?: string;
+      completed?: boolean;
+    }) => data,
+  )
   .handler(async ({ data }) => {
-    await db.update(todos).set({ title: data.title, summary: data.summary, description: data.description, updatedAt: new Date() }).where(eq(todos.id, data.id));
+    await db
+      .update(todos)
+      .set({
+        title: data.title,
+        summary: data.summary,
+        description: data.description,
+        updatedAt: new Date(),
+      })
+      .where(eq(todos.id, data.id));
     return { success: true };
   });
 
@@ -320,6 +345,7 @@ This modular (layered) architecture provides a solid foundation for building mai
 
 ### Related documentation
 
+- **Deployment** – `docs/deployment.md` for Cloudflare Workers build, deploy, env vars, and CI/CD.
 - **E2E testing** – `docs/e2e-testing.md` for Playwright setup, commands, and test structure.
 - **Forms (React Hook Form + shadcn)** – `docs/ux/forms-react-hook-form-shadcn.md` for form patterns and validation used in todo create/edit.
 - **Theming** – `docs/ux/Theming.md` for theme options (light, dark, system, sunshine) and adding new color schemes.

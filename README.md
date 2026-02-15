@@ -20,45 +20,45 @@ Clone it, point it at a Postgres database, and start building—no boilerplate a
 
 ![Todos Admin – Todo list view](screenshot1.png)
 
-*Todo list view*
+_Todo list view_
 
 ![Todos Admin – Add / Edit flow](screenshot2.png)
 
-*Add / Edit flow*
+_Add / Edit flow_
 
 ---
 
 ## ✨ Features
 
-| Feature | Description |
-|--------|-------------|
-| **Full Todo CRUD** | List, create, edit, and delete todos with validation (title, summary, description, todo type). |
-| **Type-safe server functions** | TanStack Start server functions with Zod validation and Drizzle for persistence. |
-| **TanStack Query** | Caching, invalidation, and loading/error states out of the box. |
-| **File-based routing** | TanStack Router with layouts; routes like `/`, `/todos`, `/todos/add`, `/todos/:id/edit`. |
-| **Forms** | React Hook Form + Zod + Shadcn (Field, Input, Select, Checkbox) with a shared schema. |
-| **Theming** | Light/dark theme with CSS variables and Shadcn conventions. |
-| **Toasts** | Sonner for success and error feedback on mutations. |
-| **Storybook** | Isolated development and documentation for UI components. |
-| **Testing** | Vitest for unit/integration; Playwright for E2E (critical flows). |
-| **Dev experience** | ESLint, Prettier, TanStack Router/Query devtools, Drizzle Studio. |
+| Feature                        | Description                                                                                    |
+| ------------------------------ | ---------------------------------------------------------------------------------------------- |
+| **Full Todo CRUD**             | List, create, edit, and delete todos with validation (title, summary, description, todo type). |
+| **Type-safe server functions** | TanStack Start server functions with Zod validation and Drizzle for persistence.               |
+| **TanStack Query**             | Caching, invalidation, and loading/error states out of the box.                                |
+| **File-based routing**         | TanStack Router with layouts; routes like `/`, `/todos`, `/todos/add`, `/todos/:id/edit`.      |
+| **Forms**                      | React Hook Form + Zod + Shadcn (Field, Input, Select, Checkbox) with a shared schema.          |
+| **Theming**                    | Light/dark theme with CSS variables and Shadcn conventions.                                    |
+| **Toasts**                     | Sonner for success and error feedback on mutations.                                            |
+| **Storybook**                  | Isolated development and documentation for UI components.                                      |
+| **Testing**                    | Vitest for unit/integration; Playwright for E2E (critical flows).                              |
+| **Dev experience**             | ESLint, Prettier, TanStack Router/Query devtools, Drizzle Studio.                              |
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| **Framework** | [TanStack Start](https://tanstack.com/start) (React + Vite + Nitro) |
-| **Routing** | [TanStack Router](https://tanstack.com/router) (file-based) |
-| **Data & cache** | [TanStack Query](https://tanstack.com/query) (React Query) |
-| **Database** | PostgreSQL + [Drizzle ORM](https://orm.drizzle.team/) |
-| **Validation & types** | [Zod](https://zod.dev/) + TypeScript |
-| **Styling** | [Tailwind CSS](https://tailwindcss.com/) v4 + [Shadcn UI](https://ui.shadcn.com/) |
-| **Forms** | [React Hook Form](https://react-hook-form.com/) + `@hookform/resolvers` (Zod) |
-| **Notifications** | [Sonner](https://sonner.emilkowal.ski/) |
-| **Testing** | [Vitest](https://vitest.dev/), [Playwright](https://playwright.dev/) |
-| **Package manager** | pnpm |
+| Layer                  | Technology                                                                        |
+| ---------------------- | --------------------------------------------------------------------------------- |
+| **Framework**          | [TanStack Start](https://tanstack.com/start) (React + Vite + Cloudflare Workers)  |
+| **Routing**            | [TanStack Router](https://tanstack.com/router) (file-based)                       |
+| **Data & cache**       | [TanStack Query](https://tanstack.com/query) (React Query)                        |
+| **Database**           | PostgreSQL + [Drizzle ORM](https://orm.drizzle.team/)                             |
+| **Validation & types** | [Zod](https://zod.dev/) + TypeScript                                              |
+| **Styling**            | [Tailwind CSS](https://tailwindcss.com/) v4 + [Shadcn UI](https://ui.shadcn.com/) |
+| **Forms**              | [React Hook Form](https://react-hook-form.com/) + `@hookform/resolvers` (Zod)     |
+| **Notifications**      | [Sonner](https://sonner.emilkowal.ski/)                                           |
+| **Testing**            | [Vitest](https://vitest.dev/), [Playwright](https://playwright.dev/)              |
+| **Package manager**    | pnpm                                                                              |
 
 ---
 
@@ -106,12 +106,13 @@ For full detail (data flow, examples, best practices), see **[docs/technical/arc
 
 ## 📚 Documentation
 
-| Document | Description |
-|----------|-------------|
-| **[Product requirements (PRD)](docs/prd.md)** | Scope, data model, user flows, requirements, API contract, and implementation order for LLMs. |
+| Document                                                     | Description                                                                                      |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| **[Product requirements (PRD)](docs/prd.md)**                | Scope, data model, user flows, requirements, API contract, and implementation order for LLMs.    |
 | **[Technical architecture](docs/technical/architecture.md)** | Modular layers, directory layout, server functions, DB, hooks, queries, routes, and conventions. |
-| **[Form patterns](docs/ux/forms-react-hook-form-shadcn.md)** | React Hook Form + Zod + Shadcn patterns used for Todo add/edit. |
-| **[E2E testing](docs/e2e-testing.md)** | Playwright setup and conventions for end-to-end tests. |
+| **[Deployment](docs/deployment.md)**                         | Cloudflare Workers: build, deploy, env vars, custom domains, and CI/CD.                          |
+| **[Form patterns](docs/ux/forms-react-hook-form-shadcn.md)** | React Hook Form + Zod + Shadcn patterns used for Todo add/edit.                                  |
+| **[E2E testing](docs/e2e-testing.md)**                       | Playwright setup and conventions for end-to-end tests.                                           |
 
 ---
 
@@ -134,9 +135,8 @@ For full detail (data flow, examples, best practices), see **[docs/technical/arc
 2. **Configure the database**
 
    Copy `.env.example` to `.env` or `.env.local` and set either:
-
    - `DATABASE_URL=postgres://user:password@host:port/dbname`  
-   or  
+     or
    - `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`, `DB_NAME`
 
    Then create the schema:
@@ -156,17 +156,28 @@ For full detail (data flow, examples, best practices), see **[docs/technical/arc
 
 ### Other commands
 
-| Command | Description |
-|---------|-------------|
-| `pnpm build` | Production build |
-| `pnpm preview` | Preview production build locally |
-| `pnpm test` | Run Vitest unit/integration tests |
-| `pnpm run test:e2e` | Run Playwright E2E tests |
-| `pnpm run test:e2e:ui` | Playwright E2E in UI mode |
-| `pnpm lint` | Run ESLint |
-| `pnpm check` | Prettier + ESLint (format and fix) |
-| `pnpm db:studio` | Open Drizzle Studio |
-| `pnpm storybook` | Start Storybook (default port 6006) |
+| Command                | Description                                        |
+| ---------------------- | -------------------------------------------------- |
+| `pnpm build`           | Production build                                   |
+| `pnpm preview`         | Preview production build locally (Workers runtime) |
+| `pnpm deploy`          | Build and deploy to Cloudflare Workers             |
+| `pnpm cf-typegen`      | Generate Wrangler types for bindings               |
+| `pnpm test`            | Run Vitest unit/integration tests                  |
+| `pnpm run test:e2e`    | Run Playwright E2E tests                           |
+| `pnpm run test:e2e:ui` | Playwright E2E in UI mode                          |
+| `pnpm lint`            | Run ESLint                                         |
+| `pnpm check`           | Prettier + ESLint (format and fix)                 |
+| `pnpm db:studio`       | Open Drizzle Studio                                |
+| `pnpm storybook`       | Start Storybook (default port 6006)                |
+
+### Deployment
+
+The app deploys to **Cloudflare Workers** via the Cloudflare Vite plugin. To deploy:
+
+1. Log in once: `pnpm wrangler login`
+2. Deploy: `pnpm deploy`
+
+For environment variables, custom domains, and CI/CD, see **[docs/deployment.md](docs/deployment.md)**.
 
 ### Adding Shadcn components
 
