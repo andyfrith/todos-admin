@@ -175,16 +175,16 @@ export const getTodos = createServerFn({ method: 'GET' }).handler(async () => {
 });
 
 export const createTodo = createServerFn({ method: 'POST' })
-  .inputValidator((data: { title: string }) => data)
+  .inputValidator((data: { title: string; summary?: string; description?: string }) => data)
   .handler(async ({ data }) => {
-    await db.insert(todos).values({ title: data.title });
+    await db.insert(todos).values({ title: data.title, summary: data.summary, description: data.description });
     return { success: true };
   });
 
 export const updateTodo = createServerFn({ method: 'POST' })
-  .inputValidator((data: { id: number; title: string; todoType?: string; completed?: boolean }) => data)
+  .inputValidator((data: { id: number; title: string; summary?: string; description?: string; todoType?: string; completed?: boolean }) => data)
   .handler(async ({ data }) => {
-    await db.update(todos).set({ title: data.title, updatedAt: new Date() }).where(eq(todos.id, data.id));
+    await db.update(todos).set({ title: data.title, summary: data.summary, description: data.description, updatedAt: new Date() }).where(eq(todos.id, data.id));
     return { success: true };
   });
 
@@ -208,7 +208,7 @@ export const deleteTodo = createServerFn({ method: 'POST' })
 
 Persistence and schema are handled by **Drizzle ORM** and **PostgreSQL**:
 
-- **`schema.ts`** – Table definitions (e.g. `todos`: id, title, todoType, completed, createdAt, updatedAt). Uses `drizzle-orm/pg-core` (pgTable, integer, text, boolean, timestamp).
+- **`schema.ts`** – Table definitions (e.g. `todos`: id, title, summary, description, todoType, completed, createdAt, updatedAt). Uses `drizzle-orm/pg-core` (pgTable, integer, text, boolean, timestamp).
 - **`index.ts`** – Creates the Drizzle client with `drizzle(getDatabaseUrl(), { schema })`. `getDatabaseUrl()` reads `DATABASE_URL` or builds from `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`, `DB_NAME` (aligned with `drizzle.config.ts`).
 
 Migrations are generated and applied via **Drizzle Kit** (`pnpm db:generate`, `pnpm db:migrate`, `pnpm db:push`). Schema is the single source of truth for the DB; app types for API/UI live in `lib/schema.ts`.

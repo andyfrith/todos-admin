@@ -122,16 +122,18 @@ The **database schema** is the source of truth for persistence (Drizzle in `src/
 
 ## Entity: Todo
 
-| Field      | Type      | Constraints |
-|-----------|-----------|-------------|
-| id        | integer   | Primary key, auto-generated (e.g. `generatedAlwaysAsIdentity()` in Drizzle) |
-| title     | string    | Required. Min 5, max 32 characters. |
-| todoType  | TodoType  | Optional; default `ACTIVE`. |
-| completed | boolean   | Default `false`. |
-| createdAt | timestamp | Default now. |
-| updatedAt | timestamp | Default now; update on edit. |
+| Field       | Type      | Constraints |
+|-------------|-----------|-------------|
+| id          | integer   | Primary key, auto-generated (e.g. `generatedAlwaysAsIdentity()` in Drizzle) |
+| title       | string    | Required. Min 5, max 32 characters. |
+| summary     | string    | Optional. Min 5, max 250 characters when provided. |
+| description | string    | Optional. Min 5, max 250 characters when provided. |
+| todoType    | TodoType  | Optional; default `ACTIVE`. |
+| completed   | boolean   | Default `false`. |
+| createdAt   | timestamp | Default now. |
+| updatedAt   | timestamp | Default now; update on edit. |
 
-**Validation (Zod in `lib/schema.ts`):** Title must be 5–32 characters with clear error messages (e.g. "Title must be at least 5 characters."). Use the same schema for client forms and server input validation where applicable.
+**Validation (Zod in `lib/schema.ts`):** Title must be 5–32 characters. Summary and description, when provided, must be 5–250 characters with clear error messages. Use the same schema for client forms and server input validation where applicable.
 
 ## Entity: TodoType
 
@@ -164,10 +166,10 @@ Enum: `ACTIVE`, `CULTURAL`, `RESTORATIVE`, `PLANNING`. Stored as text in DB; val
 
 ## Flow: Create Todo
 
-1. User enters text in input field
+1. User enters text in title input field (optionally summary and description)
 2. User selects todo type option from select component
 3. User submits form.
-4. Client validates title (min 5, max 32 chars) via Zod + React Hook Form.
+4. Client validates title (min 5, max 32 chars), and optionally summary/description (min 5, max 250 chars when provided) via Zod + React Hook Form.
 5. Mutation sent to server (e.g. `createTodo` server function).
 6. Database record created.
 7. Query cache invalidated/refetched
@@ -187,9 +189,9 @@ Enum: `ACTIVE`, `CULTURAL`, `RESTORATIVE`, `PLANNING`. Stored as text in DB; val
 
 ## Flow: Update Todo
 
-1. User modifies text in input field or selects alternate todo type option in select component.
+1. User modifies text in title, summary, description, or selects alternate todo type option in select component.
 2. User submits form.
-3. Client validates title (min 5, max 32 chars) via Zod + React Hook Form.
+3. Client validates title (min 5, max 32 chars), and optionally summary/description (min 5, max 250 chars when provided) via Zod + React Hook Form.
 4. Mutation sent to server (e.g. `updateTodo` server function).
 5. Database record updated
 6. Query cache invalidated/refetched
@@ -248,17 +250,17 @@ Enum: `ACTIVE`, `CULTURAL`, `RESTORATIVE`, `PLANNING`. Stored as text in DB; val
 ## Server functions (examples)
 
 - **getTodos** – GET. No input. Returns `Todo[]` (ordered by `createdAt` desc).
-- **createTodo** – POST. Input: `{ title: string }`. Validates title; inserts row; returns e.g. `{ success: true }`.
-- **updateTodo** – POST. Input: `{ id: number; title: string; todoType?: string; completed?: boolean }`. Updates row; returns e.g. `{ success: true }`.
+- **createTodo** – POST. Input: `{ title: string; summary?: string; description?: string }`. Validates title; inserts row; returns e.g. `{ success: true }`.
+- **updateTodo** – POST. Input: `{ id: number; title: string; summary?: string; description?: string; todoType?: string; completed?: boolean }`. Updates row; returns e.g. `{ success: true }`.
 - **deleteTodo** – POST. Input: `{ id: number }`. Deletes row; returns e.g. `{ success: true }`.
 
 ## Example: Create Todo (server function)
 
-**Handler input (validated):** `{ title: string }` (title 5–32 chars).
+**Handler input (validated):** `{ title: string; summary?: string; description?: string }` (title 5–32 chars; summary and description 5–250 chars when provided).
 
 **Handler behavior:** Insert into `todos` table via Drizzle; return `{ success: true }`.
 
-**Client usage:** Call `createTodo({ data: { title } })` from a mutation hook; invalidate query key `['todos']` on success and show success toast (e.g. Sonner).
+**Client usage:** Call `createTodo({ data: { title, summary, description } })` from a mutation hook; invalidate query key `['todos']` on success and show success toast (e.g. Sonner).
 
 ---
 
@@ -267,7 +269,7 @@ Enum: `ACTIVE`, `CULTURAL`, `RESTORATIVE`, `PLANNING`. Stored as text in DB; val
 ## Screens
 
 - **Home** (`/`) and **Todo list** (`/todos`) with navigation to add/edit.
-- **Add Todo** (`/todos/add`) and **Edit Todo** (`/todos/:id/edit`) with form (title, todo type, completed) and validation.
+- **Add Todo** (`/todos/add`) and **Edit Todo** (`/todos/:id/edit`) with form (title, summary, description, todo type, completed) and validation.
 - **Storybook** for UI component explorer (separate dev server).
 
 ## States Required

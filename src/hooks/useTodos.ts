@@ -14,7 +14,11 @@ export function useCreateTodo() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (title: string) => createTodo({ data: { title } }),
+    mutationFn: (data: {
+      title: string;
+      summary?: string;
+      description?: string;
+    }) => createTodo({ data }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['todos'] });
       toast.success('Todo created successfully', { position: 'top-center' });
@@ -29,14 +33,21 @@ export function useUpdateTodo() {
     mutationFn: ({
       id,
       title,
+      summary,
+      description,
       todoType,
       completed,
     }: {
       id: number;
       title: string;
+      summary?: string;
+      description?: string;
       todoType?: string;
       completed?: boolean;
-    }) => updateTodo({ data: { id, title, todoType, completed } }),
+    }) =>
+      updateTodo({
+        data: { id, title, summary, description, todoType, completed },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['todos'] });
       toast.success('Todo updated successfully', { position: 'top-center' });

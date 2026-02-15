@@ -20,10 +20,11 @@ export default function Todo({
         borderColor: 'rgba(93, 103, 227, 0.3)',
       }}
     >
-      <div className="flex items-center justify-between">
-        <span className="text-lg font-medium text-white group-hover:text-indigo-200 transition-colors">
-          {todo.title}
-        </span>
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center justify-between">
+          <span className="text-lg font-medium text-white group-hover:text-indigo-200 transition-colors">
+            {todo.title}
+          </span>
         <div>
           {/* {handleEdit && todo.id != null && ( */}
           <button
@@ -41,6 +42,17 @@ export default function Todo({
             <TrashIcon className="w-4 h-4" />
           </button>
         </div>
+        </div>
+        {(todo.summary || todo.description) && (
+          <div className="text-sm text-indigo-300/80 space-y-0.5 mt-1">
+            {todo.summary && (
+              <p className="line-clamp-2">{todo.summary}</p>
+            )}
+            {todo.description && todo.description !== todo.summary && (
+              <p className="line-clamp-2 text-indigo-300/70">{todo.description}</p>
+            )}
+          </div>
+        )}
       </div>
     </li>
   );

@@ -15,6 +15,7 @@ import {
   FieldSet,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -36,6 +37,8 @@ export default function TodoShadcnForm({
     resolver: zodResolver(TodoSchema as never),
     defaultValues: {
       title: '',
+      summary: '',
+      description: '',
       todoType: 'ACTIVE',
       completed: false,
     },
@@ -63,10 +66,6 @@ export default function TodoShadcnForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Title</FieldLabel>
-                {/* {fieldState.invalid && (
-                  <Asterisk className="w-4 h-4 text-red-500" />
-                )} */}
-
                 <Input
                   {...field}
                   id={field.name}
@@ -75,9 +74,58 @@ export default function TodoShadcnForm({
                   style={{
                     background: 'rgba(93, 103, 227, 0.1)',
                     borderColor: 'rgba(93, 103, 227, 0.3)',
-                    //   focusRing: 'rgba(93, 103, 227, 0.5)',
                   }}
                   placeholder="Add a new todo..."
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]}></FieldError>
+                )}
+              </Field>
+            )}
+          />
+          <Controller
+            control={form.control}
+            name="summary"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Summary</FieldLabel>
+                <Textarea
+                  {...field}
+                  value={field.value ?? ''}
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
+                  rows={3}
+                  className="flex-1 px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all text-white placeholder-indigo-300/50 resize-none"
+                  style={{
+                    background: 'rgba(93, 103, 227, 0.1)',
+                    borderColor: 'rgba(93, 103, 227, 0.3)',
+                  }}
+                  placeholder="Brief summary (optional)"
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]}></FieldError>
+                )}
+              </Field>
+            )}
+          />
+          <Controller
+            control={form.control}
+            name="description"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+                <Textarea
+                  {...field}
+                  value={field.value ?? ''}
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
+                  rows={6}
+                  className="flex-1 px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all text-white placeholder-indigo-300/50 resize-none"
+                  style={{
+                    background: 'rgba(93, 103, 227, 0.1)',
+                    borderColor: 'rgba(93, 103, 227, 0.3)',
+                  }}
+                  placeholder="Description (optional)"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]}></FieldError>

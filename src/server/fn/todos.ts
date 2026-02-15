@@ -15,9 +15,19 @@ export const getTodos = createServerFn({
 export const createTodo = createServerFn({
   method: 'POST',
 })
-  .inputValidator((data: { title: string }) => data)
+  .inputValidator(
+    (data: {
+      title: string;
+      summary?: string;
+      description?: string;
+    }) => data,
+  )
   .handler(async ({ data }) => {
-    await db.insert(todos).values({ title: data.title });
+    await db.insert(todos).values({
+      title: data.title,
+      ...(data.summary != null && { summary: data.summary }),
+      ...(data.description != null && { description: data.description }),
+    });
     return { success: true };
   });
 
@@ -28,6 +38,8 @@ export const updateTodo = createServerFn({
     (data: {
       id: number;
       title: string;
+      summary?: string;
+      description?: string;
       todoType?: string;
       completed?: boolean;
     }) => data,
@@ -37,6 +49,8 @@ export const updateTodo = createServerFn({
       .update(todos)
       .set({
         title: data.title,
+        ...(data.summary != null && { summary: data.summary }),
+        ...(data.description != null && { description: data.description }),
         ...(data.todoType != null && { todoType: data.todoType }),
         ...(data.completed != null && { completed: data.completed }),
         updatedAt: new Date(),

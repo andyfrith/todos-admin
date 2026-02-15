@@ -21,6 +21,8 @@ export default function EditTodo() {
       {
         id: values.id,
         title: values.title,
+        summary: values.summary,
+        description: values.description,
         todoType: values.todoType,
         completed: values.completed,
       },
