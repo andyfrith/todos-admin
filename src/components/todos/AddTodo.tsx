@@ -9,7 +9,13 @@ export default function AddTodo() {
     <>
       <h2 className="text-2xl font-bold mb-4 text-indigo-200">Add Todo</h2>
       <TodoForm
-        onFormSubmit={(data: Todo) => createTodoMutation.mutate(data.title)}
+        onFormSubmit={(data: Todo) =>
+          createTodoMutation.mutate({
+            title: data.title,
+            summary: data.summary,
+            description: data.description,
+          })
+        }
         isPending={createTodoMutation.isPending}
       />
     </>

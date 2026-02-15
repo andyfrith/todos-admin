@@ -32,7 +32,7 @@ Clone it, point it at a Postgres database, and start building—no boilerplate a
 
 | Feature | Description |
 |--------|-------------|
-| **Full Todo CRUD** | List, create, edit, and delete todos with validation (title length, todo type). |
+| **Full Todo CRUD** | List, create, edit, and delete todos with validation (title, summary, description, todo type). |
 | **Type-safe server functions** | TanStack Start server functions with Zod validation and Drizzle for persistence. |
 | **TanStack Query** | Caching, invalidation, and loading/error states out of the box. |
 | **File-based routing** | TanStack Router with layouts; routes like `/`, `/todos`, `/todos/add`, `/todos/:id/edit`. |

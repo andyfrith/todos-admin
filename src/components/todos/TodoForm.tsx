@@ -10,6 +10,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from '@/components/ui/field';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -60,6 +61,8 @@ export default function TodoForm({
     resolver: zodResolver(TodoSchema as never),
     defaultValues: todo ?? {
       title: '',
+      summary: '',
+      description: '',
       todoType: 'ACTIVE',
       completed: false,
     },
@@ -84,18 +87,41 @@ export default function TodoForm({
                 borderColor: 'rgba(93, 103, 227, 0.3)',
               }}
             />
-            <button
-              type="submit"
-              disabled={isPending}
-              className="px-6 py-3 font-semibold rounded-lg shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105 active:scale-95 whitespace-nowrap"
-              style={{
-                background: 'linear-gradient(135deg, #5d67e3 0%, #8b5cf6 100%)',
-                color: 'white',
-              }}
-            >
-              {isPending ? effectivePendingLabel : effectiveSubmitLabel}
-            </button>
           </div>
+          <Field data-invalid={!!errors.summary}>
+            <FieldLabel htmlFor="summary">Summary</FieldLabel>
+            <Textarea
+              {...register('summary')}
+              id="summary"
+              rows={3}
+              placeholder="Brief summary (optional)"
+              className="flex-1 px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all text-white placeholder-indigo-300/50 resize-none"
+              style={{
+                background: 'rgba(93, 103, 227, 0.1)',
+                borderColor: 'rgba(93, 103, 227, 0.3)',
+              }}
+            />
+            {errors.summary && (
+              <FieldError errors={[errors.summary]} />
+            )}
+          </Field>
+          <Field data-invalid={!!errors.description}>
+            <FieldLabel htmlFor="description">Description</FieldLabel>
+            <Textarea
+              {...register('description')}
+              id="description"
+              rows={6}
+              placeholder="Description (optional)"
+              className="flex-1 px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all text-white placeholder-indigo-300/50 resize-none"
+              style={{
+                background: 'rgba(93, 103, 227, 0.1)',
+                borderColor: 'rgba(93, 103, 227, 0.3)',
+              }}
+            />
+            {errors.description && (
+              <FieldError errors={[errors.description]} />
+            )}
+          </Field>
           <Controller
             control={control}
             name="todoType"
@@ -153,6 +179,19 @@ export default function TodoForm({
               </Field>
             )}
           />
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={isPending}
+              className="px-6 py-3 font-semibold rounded-lg shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105 active:scale-95 whitespace-nowrap"
+              style={{
+                background: 'linear-gradient(135deg, #5d67e3 0%, #8b5cf6 100%)',
+                color: 'white',
+              }}
+            >
+              {isPending ? effectivePendingLabel : effectiveSubmitLabel}
+            </button>
+          </div>
         </FieldGroup>
       </form>
       {Object.keys(errors).length > 0 && (

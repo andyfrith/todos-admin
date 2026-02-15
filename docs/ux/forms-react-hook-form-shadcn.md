@@ -51,6 +51,16 @@ export const TodoSchema = z.object({
     .string()
     .min(5, 'Title must be at least 5 characters.')
     .max(32, 'Title must be at most 32 characters.'),
+  summary: z
+    .string()
+    .min(5, 'Summary must be at least 5 characters.')
+    .max(250, 'Summary must be at most 250 characters.')
+    .optional(),
+  description: z
+    .string()
+    .min(5, 'Description must be at least 5 characters.')
+    .max(250, 'Description must be at most 250 characters.')
+    .optional(),
   todoType: TodoTypeSchema.optional(),
   completed: z.boolean().optional(),
   createdAt: z.date().optional(),
@@ -69,6 +79,8 @@ const form = useForm<Todo>({
   resolver: zodResolver(TodoSchema as never),
   defaultValues: todo ?? {
     title: '',
+    summary: '',
+    description: '',
     todoType: 'ACTIVE',
     completed: false,
   },
@@ -128,6 +140,9 @@ Forms use custom Field components with react-hook-form: `register` for simple in
         </Field>
       )}
     />
+
+    {/* Summary: optional text field */}
+    {/* Description: optional text field */}
 
     {/* Type: Select — see Select Field Pattern */}
     {/* Status: FieldSet + Checkbox — see Checkbox Field Pattern */}
@@ -217,6 +232,16 @@ Standard input attributes for Todo fields:
 // Title (text)
 type="text"
 placeholder="Add a new todo..." // or "Edit todo..." in edit mode
+id={field.name}
+aria-invalid={fieldState.invalid}
+
+// Summary (optional)
+placeholder="Brief summary (optional)"
+id={field.name}
+aria-invalid={fieldState.invalid}
+
+// Description (optional)
+placeholder="Description (optional)"
 id={field.name}
 aria-invalid={fieldState.invalid}
 

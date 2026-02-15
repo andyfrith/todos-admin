@@ -5,6 +5,12 @@ import { tanstackConfig } from '@tanstack/eslint-config';
 export default [
   ...tanstackConfig,
   {
-    ignores: ['.storybook/**', 'eslint.config.js', 'prettier.config.js'],
+    ignores: [
+      '.storybook/**',
+      '.output/**',
+      'playwright-report/**',
+      'eslint.config.js',
+      'prettier.config.js',
+    ],
   },
 ];
