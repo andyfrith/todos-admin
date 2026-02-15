@@ -42,6 +42,7 @@ Tests are grouped by route or behavior:
 | `e2e/todos.spec.ts` | Todos list (`/todos`): heading, list/empty/loading/error states; navigation from home via sidebar |
 | `e2e/add-todo.spec.ts` | Add Todo (`/todos/add`): heading, form (title field, placeholder); navigation via sidebar |
 | `e2e/edit-todo.spec.ts` | Edit Todo (`/todos/:id/edit`): heading when todo exists; "Todo not found" for invalid id; edit button from list navigates to edit page |
+| `e2e/theme.spec.ts` | Theme selector: visibility in header; all options (Light, Dark, System, Sunshine); selecting themes applies correct class on `html` |
 
 Shared helpers live in `e2e/fixtures.ts`:
 

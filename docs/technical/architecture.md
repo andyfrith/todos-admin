@@ -68,10 +68,10 @@ Global styling entry point:
 
 - **Tailwind CSS** via `@import 'tailwindcss'`
 - **tw-animate-css** for animations
-- **CSS custom properties** for theming (e.g. `--background`, `--foreground`, `--primary`) with light/dark support via `@custom-variant dark`
+- **CSS custom properties** for theming (e.g. `--background`, `--foreground`, `--primary`) with support for light, dark, and sunshine themes via `@custom-variant dark` and `@custom-variant sunshine`
 - Base styles for `body` and `code`
 
-The root route links this file so it applies to the whole app.
+The root route links this file so it applies to the whole app. See `docs/ux/Theming.md` for the theming system.
 
 ## Types and validation
 
@@ -88,7 +88,7 @@ UI is split into:
 
 - **Feature components** – e.g. `components/todos/` (Todos, Todo, AddTodo, EditTodo, TodoForm, TodoShadcnForm, FeatureInfo)
 - **Shared UI** – `components/ui/` (shadcn-style: button, input, label, checkbox, select, field, separator, sonner toaster)
-- **Layout** – `Header.tsx`
+- **Layout** – `Header.tsx`, `ThemeSelector.tsx`
 - **Storybook** – `components/storybook/` for isolated component development
 
 Components use **hooks** and **server functions** (via hooks) for data; they do not call the database or server functions directly except through hooks.
@@ -322,3 +322,4 @@ This modular (layered) architecture provides a solid foundation for building mai
 
 - **E2E testing** – `docs/e2e-testing.md` for Playwright setup, commands, and test structure.
 - **Forms (React Hook Form + shadcn)** – `docs/ux/forms-react-hook-form-shadcn.md` for form patterns and validation used in todo create/edit.
+- **Theming** – `docs/ux/Theming.md` for theme options (light, dark, system, sunshine) and adding new color schemes.
