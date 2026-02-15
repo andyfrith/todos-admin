@@ -179,6 +179,18 @@ The app deploys to **Cloudflare Workers** via the Cloudflare Vite plugin. To dep
 
 For environment variables, custom domains, and CI/CD, see **[docs/deployment.md](docs/deployment.md)**.
 
+### Branching
+
+Feature work is done on branches created from **`development`**:
+
+```bash
+git checkout development
+git pull origin development
+git checkout -b feature/your-feature-name
+```
+
+Open pull requests against **`development`**. Merge to `master` when releasing.
+
 ### Adding Shadcn components
 
 Use the latest Shadcn CLI:
