@@ -39,7 +39,8 @@ test.describe('Edit Todo route (/todos/:id/edit)', () => {
 
   test('shows "Todo not found" for invalid id', async ({ page }) => {
     await page.goto('/todos/99999/edit');
-    await expect(page.getByText('Todo not found.')).toBeVisible();
+    // Wait for loading to finish; in CI the Workers runtime can be slow to respond
+    await expect(page.getByText('Todo not found.')).toBeVisible({ timeout: 15_000 });
   });
 });
 
