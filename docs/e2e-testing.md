@@ -14,7 +14,11 @@ E2E tests run in a real browser (Chromium by default) against the running applic
 ## Prerequisites
 
 - **Application server:** The app must be reachable at `http://localhost:3000` when running e2e tests. Playwright is configured to reuse an existing dev server if one is already running; otherwise it will start one via `pnpm run dev`.
-- **Database:** For routes that load data (e.g. `/todos`, `/todos/:id/edit`), a working database connection is required (same as for `pnpm run dev`). Tests are written to handle empty or loading states so they pass whether or not the database has data.
+- **Database:** A working PostgreSQL connection is required. Routes that load data (e.g. `/todos`, `/todos/:id/edit`) query the database; if the DB is unavailable, those pages will hang and tests will timeout. Before running e2e tests locally, ensure:
+  1. `DATABASE_URL` (or `DB_*` vars) is set in `.env` or `.env.local`
+  2. Postgres is running
+  3. Schema is applied: `pnpm db:push`
+  Tests are written to tolerate **empty vs populated** data (e.g. "No todos found" vs a list), but the database must be reachable.
 
 ## Commands
 
@@ -41,7 +45,7 @@ Tests are grouped by route or behavior:
 | `e2e/home.spec.ts`      | Home (`/`): branding, feature info, page title                                                                                         |
 | `e2e/todos.spec.ts`     | Todos list (`/todos`): heading, list/empty/loading/error states; navigation from home via sidebar                                      |
 | `e2e/add-todo.spec.ts`  | Add Todo (`/todos/add`): heading, form (title field, placeholder); navigation via sidebar                                              |
-| `e2e/edit-todo.spec.ts` | Edit Todo (`/todos/:id/edit`): heading when todo exists; "Todo not found" for invalid id; edit button from list navigates to edit page |
+| `e2e/edit-todo.spec.ts` | Edit Todo (`/todos/:id/edit`): heading when todo exists; "Todo not found" or "Failed to load todos" for invalid id; edit button from list navigates to edit page |
 | `e2e/theme.spec.ts`     | Theme selector: visibility in header; all options (Light, Dark, System, Sunshine); selecting themes applies correct class on `html`    |
 
 Shared helpers live in `e2e/fixtures.ts`:
@@ -55,12 +59,13 @@ Shared helpers live in `e2e/fixtures.ts`:
 2. **Route-first:** Add or extend a `*.spec.ts` file under `e2e/` that matches the route or feature (e.g. `e2e/todos.spec.ts` for `/todos`).
 3. **Sidebar navigation:** When testing navigation from the sidebar, use `openNav(page)` then `clickNavLink(page, 'Link Name')` so the fixed overlay does not cause "element outside viewport" failures.
 4. **Data-independent:** Where possible, assert on both populated and empty/loading states (e.g. "Todos" page shows either a list, "No todos found", or "Pending...") so tests pass regardless of DB state.
-5. **Avoid hard-coded IDs:** For edit route, either derive the id from the list (e.g. click "Edit" on first todo) or test the "Todo not found" path with a known invalid id (e.g. `99999`).
+5. **Wait before data-dependent assertions:** For routes that load data (e.g. `/todos`), wait for the page to settle (one of: "Pending...", "No todos found", list, or "Error!") before querying elements that may not exist when empty (e.g. `getByRole('list')`, "Edit todo" button). Avoid waiting on elements that never appear in the empty state—this causes timeouts.
+6. **Avoid hard-coded IDs:** For edit route, either derive the id from the list (e.g. click "Edit" on first todo) or test the "Todo not found" path with a known invalid id (e.g. `99999`).
 
 ## CI Considerations
 
 - In CI, set `CI=true` (or ensure no server is running on the configured URL). Playwright will start the web server via `webServer.command` and wait for `webServer.url` before running tests.
-- Ensure the database is available and migrated in CI if routes under test depend on it; tests are written to tolerate empty or loading states where applicable.
+- Ensure the database is available and schema is applied before running tests (e.g. `pnpm db:push` in the workflow). The CI workflow sets `DATABASE_URL` and runs `db:push` before `test:e2e`. Tests tolerate empty or populated data but require a reachable database.
 - To run only Chromium and avoid installing all browsers, the config already uses a single project; for faster CI you can restrict with `--project=chromium` (default in this project).
 
 ## Related Documentation
