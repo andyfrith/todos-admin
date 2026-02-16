@@ -345,7 +345,7 @@ This modular (layered) architecture provides a solid foundation for building mai
 
 ### Related documentation
 
-- **Deployment** – `docs/deployment.md` for Cloudflare Workers build, deploy, env vars, and CI/CD.
+- **Deployment** – `docs/deployment.md` for Cloudflare Workers build, deploy (via Cloudflare + GitHub), env vars, and custom domains.
 - **E2E testing** – `docs/e2e-testing.md` for Playwright setup, commands, and test structure.
 - **Forms (React Hook Form + shadcn)** – `docs/ux/forms-react-hook-form-shadcn.md` for form patterns and validation used in todo create/edit.
 - **Theming** – `docs/ux/Theming.md` for theme options (light, dark, system, sunshine) and adding new color schemes.

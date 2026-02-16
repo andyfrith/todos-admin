@@ -94,22 +94,22 @@ See [Cloudflare Workers custom domains](https://developers.cloudflare.com/worker
 
 ---
 
-## CI/CD (e.g. GitHub Actions)
+## CI (lint and tests before merge)
 
-To deploy from CI:
+A GitHub Actions workflow (`.github/workflows/ci.yml`) runs **lint** and **all tests** (unit + E2E) on every pull request targeting **`development`** or **`master`**. Merges into those branches should only be allowed when this check passes.
 
-1. Authenticate Wrangler using a **Cloudflare API token** or **OAuth** (e.g. [Wrangler GitHub Action](https://github.com/cloudflare/wrangler-action)).
-2. Run `pnpm install`, then `pnpm deploy` (or `pnpm build` and `wrangler deploy`).
-3. Set any required secrets as repository or environment secrets and pass them into the job (e.g. `CF_API_TOKEN` for the Wrangler action).
+- **Trigger:** Pull requests to `development` or `master`.
+- **Steps:** Lint → unit tests (Vitest) → E2E tests (Playwright with Postgres). The Postgres service uses `POSTGRES_HOST_AUTH_METHOD=trust` for the ephemeral CI container only (no repository secret required).
 
-Example (conceptual):
+**Require the check before merging:** In GitHub go to **Settings → Code and automation → Branches**. For both **`development`** and **`master`**, add or edit a branch protection rule, enable **Require status checks to pass before merging**, and select **Lint & test**. Only when that check is green can PRs into those branches be merged.
 
-```yaml
-- run: pnpm install --frozen-lockfile
-- run: pnpm deploy
-  env:
-    CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-```
+---
+
+## Deployment (Cloudflare + GitHub)
+
+Deployment uses **Cloudflare's built-in GitHub integration**. Connect your repository in the Cloudflare dashboard (Workers & Pages → your project → Settings → Builds & deployments → Connect to Git). Cloudflare builds and deploys automatically when you push or merge to the branch you configure (e.g. `master`).
+
+Build settings in Cloudflare should match your local setup (e.g. **Build command:** `pnpm run build`, **Build output directory:** use the Worker build output as per the [Cloudflare Workers + Vite](https://developers.cloudflare.com/workers/framework-guides/web-apps/tanstack-start/) guide). Environment variables and secrets are configured in the Cloudflare dashboard for the Worker.
 
 ---
 

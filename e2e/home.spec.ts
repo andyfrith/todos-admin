@@ -7,7 +7,7 @@ test.describe('Home route (/)', () => {
       page.getByRole('heading', { name: 'Todos Admin' }),
     ).toBeVisible();
     await expect(
-      page.getByRole('heading', { name: 'Powered by Drizzle ORM' }),
+      page.getByRole('heading', { name: 'About' }),
     ).toBeVisible();
   });
 

@@ -9,7 +9,7 @@ This PRD defines a **production‑ready starter template** built with TanStack S
 - **Read the entire document** before generating code. Use sections 2 (Scope), 4 (Data Model), 6 (Flows), 7 (Requirements), 8 (API), and 17 (Implementation order) as primary references.
 - **Follow the implementation order** in section 17 so that schema, server functions, hooks, and UI are built in dependency order.
 - **Respect in-scope vs out-of-scope** (section 2). Do not add auth, roles, or multi-tenancy unless the user explicitly requests them.
-- **Use linked documentation** when implementing: `docs/technical/architecture.md` for layer boundaries and file layout; `docs/deployment.md` for Cloudflare Workers deploy and env config; `docs/ux/forms-react-hook-form-shadcn.md` for form patterns; `docs/e2e-testing.md` for E2E test setup and conventions.
+- **Use linked documentation** when implementing: `docs/technical/architecture.md` for layer boundaries and file layout; `docs/deployment.md` for Cloudflare Workers deploy, CI (lint/tests before merge), and env config; `docs/ux/forms-react-hook-form-shadcn.md` for form patterns; `docs/e2e-testing.md` for E2E test setup and conventions.
 - **Verify against the acceptance checklist** in section 16 (AI Implementation Notes) before considering the task complete.
 - **Prefer existing patterns** in the codebase over introducing new libraries or patterns not listed in this PRD.
 
