@@ -1,0 +1,59 @@
+# Run lint and all tests. Require this check to pass before merging into development or master.
+# Requires repository secret CI_DATABASE_PASSWORD (Settings → Secrets and variables → Actions).
+name: CI
+
+on:
+  pull_request:
+    branches: [development, master]
+
+jobs:
+  ci:
+    name: Lint & test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.CI_DATABASE_PASSWORD }}
+          POSTGRES_DB: todos_admin_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: E2E tests
+        env:
+          DATABASE_URL: postgres://postgres:${{ secrets.CI_DATABASE_PASSWORD }}@localhost:5432/todos_admin_test
+        run: pnpm db:push && pnpm run test:e2e
