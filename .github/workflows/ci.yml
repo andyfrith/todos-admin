@@ -1,5 +1,5 @@
 # Run lint and all tests. Require this check to pass before merging into development or master.
-# Requires repository secret CI_DATABASE_PASSWORD (Settings → Secrets and variables → Actions).
+# Postgres service uses trust auth (no password) for the ephemeral CI container only.
 name: CI
 
 on:
@@ -15,8 +15,8 @@ jobs:
         image: postgres:16
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.CI_DATABASE_PASSWORD }}
           POSTGRES_DB: todos_admin_test
+          POSTGRES_HOST_AUTH_METHOD: trust
         ports:
           - 5432:5432
         options: >-
@@ -55,5 +55,5 @@ jobs:
 
       - name: E2E tests
         env:
-          DATABASE_URL: postgres://postgres:${{ secrets.CI_DATABASE_PASSWORD }}@localhost:5432/todos_admin_test
+          DATABASE_URL: postgres://postgres@localhost:5432/todos_admin_test
         run: pnpm db:push && pnpm run test:e2e

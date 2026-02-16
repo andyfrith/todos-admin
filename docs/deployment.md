@@ -99,8 +99,7 @@ See [Cloudflare Workers custom domains](https://developers.cloudflare.com/worker
 A GitHub Actions workflow (`.github/workflows/ci.yml`) runs **lint** and **all tests** (unit + E2E) on every pull request targeting **`development`** or **`master`**. Merges into those branches should only be allowed when this check passes.
 
 - **Trigger:** Pull requests to `development` or `master`.
-- **Steps:** Lint → unit tests (Vitest) → E2E tests (Playwright with Postgres).
-- **Required secret:** In **Settings → Secrets and variables → Actions**, add **`CI_DATABASE_PASSWORD`** (value used only for the ephemeral CI Postgres container; e.g. a random string or `postgres`).
+- **Steps:** Lint → unit tests (Vitest) → E2E tests (Playwright with Postgres). The Postgres service uses `POSTGRES_HOST_AUTH_METHOD=trust` for the ephemeral CI container only (no repository secret required).
 
 **Require the check before merging:** In GitHub go to **Settings → Code and automation → Branches**. For both **`development`** and **`master`**, add or edit a branch protection rule, enable **Require status checks to pass before merging**, and select **Lint & test**. Only when that check is green can PRs into those branches be merged.
 
