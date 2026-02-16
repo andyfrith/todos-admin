@@ -37,7 +37,11 @@ export default function EditTodo() {
   if (todosPending) return <div className="text-indigo-200">Loading...</div>;
   if (isError) return <div className="text-red-400">Failed to load todos.</div>;
   if (todo == null)
-    return <div className="text-indigo-200">Todo not found.</div>;
+    return (
+      <div className="text-indigo-200" data-testid="edit-todo-not-found">
+        Todo not found.
+      </div>
+    );
 
   return (
     <>

@@ -110,7 +110,7 @@ For full detail (data flow, examples, best practices), see **[docs/technical/arc
 | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
 | **[Product requirements (PRD)](docs/prd.md)**                | Scope, data model, user flows, requirements, API contract, and implementation order for LLMs.    |
 | **[Technical architecture](docs/technical/architecture.md)** | Modular layers, directory layout, server functions, DB, hooks, queries, routes, and conventions. |
-| **[Deployment](docs/deployment.md)**                         | Cloudflare Workers: build, deploy, env vars, custom domains, and CI/CD.                          |
+| **[Deployment](docs/deployment.md)**                         | Cloudflare Workers: build, deploy (via Cloudflare + GitHub), env vars, custom domains.            |
 | **[Form patterns](docs/ux/forms-react-hook-form-shadcn.md)** | React Hook Form + Zod + Shadcn patterns used for Todo add/edit.                                  |
 | **[E2E testing](docs/e2e-testing.md)**                       | Playwright setup and conventions for end-to-end tests.                                           |
 
@@ -177,7 +177,7 @@ The app deploys to **Cloudflare Workers** via the Cloudflare Vite plugin. To dep
 1. Log in once: `pnpm wrangler login`
 2. Deploy: `pnpm deploy`
 
-For environment variables, custom domains, and CI/CD, see **[docs/deployment.md](docs/deployment.md)**.
+For deployment (Cloudflare + GitHub), environment variables, and custom domains, see **[docs/deployment.md](docs/deployment.md)**.
 
 ### Branching
 
@@ -189,7 +189,7 @@ git pull origin development
 git checkout -b feature/your-feature-name
 ```
 
-Open pull requests against **`development`**. Merge to `master` when releasing.
+Open pull requests against **`development`**. Merge to `master` when releasing. The **Lint & test** CI check must pass before merging into `development` or `master`. Deployment is handled by Cloudflare’s GitHub integration (see [Deployment](docs/deployment.md)).
 
 ### Adding Shadcn components
 
