@@ -76,10 +76,24 @@ This ensures the TanStack Start server runs in the Workers runtime during dev an
 - **Local development** — Use `.env` or `.env.local`. Do not commit secrets; `.env.local` is typically in `.gitignore`.
 - **Local preview** (`pnpm preview`) — For Workers runtime preview, put secrets in **`.dev.vars`** (same format as `.env`). Add `.dev.vars` to `.gitignore`; it is already ignored in this project.
 - **Production** — Set variables and secrets in the [Cloudflare dashboard](https://dash.cloudflare.com) under **Workers & Pages** → your Worker (**todos-admin**) → **Settings** → **Variables and Secrets**, or via CLI:
-  - **Plain text:** `pnpm wrangler secret put <NAME>`
-  - **Bulk:** use the dashboard or [Wrangler config](https://developers.cloudflare.com/workers/wrangler/configuration/#vars) `vars` (non-sensitive only).
+  - **Secrets (sensitive):** `pnpm wrangler secret put <NAME>` (e.g. `DATABASE_URL` or `DB_PASSWORD`).
+  - **Non-sensitive:** use the dashboard or [Wrangler config](https://developers.cloudflare.com/workers/wrangler/configuration/#vars) `vars`.
 
-If the app uses a database (e.g. `DATABASE_URL`), configure the same variable in production so server functions can connect.
+### Database on Cloudflare (required for production)
+
+The app connects to PostgreSQL using `DATABASE_URL` or the `DB_*` variables (see `src/db/index.ts`). **These are not deployed** — `.env` is only for local use. To fix "database issue" after deploy:
+
+1. **Option A — single URL (recommended):** Set one secret with the full Postgres URL:
+   ```bash
+   pnpm wrangler secret put DATABASE_URL
+   ```
+   When prompted, paste your URL (e.g. `postgresql://user:password@host:port/dbname`). Use your production DB (e.g. Supabase pooler URL).
+
+2. **Option B — separate vars:** In **Workers & Pages** → **todos-admin** → **Settings** → **Variables and Secrets**, add:
+   - **Encrypted (secrets):** `DB_PASSWORD`
+   - **Plain (variables):** `DB_USER`, `DB_HOST`, `DB_PORT`, `DB_NAME` if you prefer not to use `DATABASE_URL`.
+
+After saving, redeploy or wait for the next deploy; the Worker will then have `process.env.DATABASE_URL` (or `DB_*`) and can connect to the database.
 
 ---
 
