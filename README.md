@@ -108,6 +108,7 @@ For full detail (data flow, examples, best practices), see **[docs/technical/arc
 
 | Document                                                     | Description                                                                                      |
 | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| **[Blueprint: scaffold new apps](docs/blueprint/README.md)**  | Use this repo as a template: scaffolding tasks, Cursor prompts, and step-by-step guide.         |
 | **[Product requirements (PRD)](docs/prd.md)**                | Scope, data model, user flows, requirements, API contract, and implementation order for LLMs.    |
 | **[Technical architecture](docs/technical/architecture.md)** | Modular layers, directory layout, server functions, DB, hooks, queries, routes, and conventions. |
 | **[Deployment](docs/deployment.md)**                         | Cloudflare Workers: build, deploy (via Cloudflare + GitHub), env vars, custom domains.            |
