@@ -2,10 +2,14 @@ import { createFileRoute } from '@tanstack/react-router';
 import FeatureInfo from '@/components/todos/FeatureInfo';
 
 export const Route = createFileRoute('/')({
-  component: RouteComponent,
+  component: IndexPage,
 });
 
-function RouteComponent() {
+/**
+ * Home page: hero card with logo, title, and feature info.
+ * Exported for Storybook and tests.
+ */
+export function IndexPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4 text-foreground dark:text-white dark:[background:linear-gradient(135deg,#0c1a2b_0%,#1a2332_50%,#16202e_100%)]">
       <div className="w-full max-w-2xl rounded-xl border border-border bg-card p-8 text-card-foreground shadow-2xl dark:border-white/10 dark:bg-transparent dark:[background:linear-gradient(135deg,rgba(22,32,46,0.95)_0%,rgba(12,26,43,0.95)_100%)] dark:[backdrop-filter:blur(10px)]">
