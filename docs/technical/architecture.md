@@ -89,7 +89,7 @@ UI is split into:
 - **Feature components** – e.g. `components/todos/` (Todos, Todo, AddTodo, EditTodo, TodoForm, TodoShadcnForm, FeatureInfo)
 - **Shared UI** – `components/ui/` (shadcn-style: button, input, label, checkbox, select, field, separator, sonner toaster)
 - **Layout** – `Header.tsx`, `ThemeSelector.tsx`
-- **Storybook** – `components/storybook/` for isolated component development
+- **Storybook** – Stories live in `components/` (e.g. `Header.stories.tsx`, `todos/FeatureInfo.stories.tsx`) and `components/storybook/` (button, input, dialog, etc.). Route stories live under `routes/` with a **`-` prefix** (e.g. `-index.stories.tsx`) so the TanStack Router plugin excludes them from the route tree.
 
 Components use **hooks** and **server functions** (via hooks) for data; they do not call the database or server functions directly except through hooks.
 
@@ -137,12 +137,14 @@ Used by hooks (e.g. `useTodos` spreads `todosQueryOptions()`) so query keys and 
 
 **TanStack Router** file-based routes:
 
-- **`__root.tsx`** – Root layout: HTML shell, HeadContent, Scripts, Header, Toaster, TanStack Router/Query devtools; injects router context (e.g. `queryClient`)
-- **`index.tsx`** – `/`
+- **`__root.tsx`** – Root layout: HTML shell, HeadContent, Scripts, ThemeProvider (with `themes` and `storageKey`), Header, Toaster, TanStack Router/Query devtools; injects router context (e.g. `queryClient`)
+- **`index.tsx`** – `/` (exports `IndexPage` for Storybook/tests)
 - **`todos/route.tsx`** – Layout for `/todos` (Outlet for child routes)
 - **`todos/index.tsx`** – `/todos` list (renders `Todos`)
 - **`todos/add.tsx`** – `/todos/add` (renders `AddTodo`)
 - **`todos/$id/edit.tsx`** – `/todos/:id/edit` (renders `EditTodo`)
+
+Route story files (e.g. `-index.stories.tsx`) use the **`-` prefix** so they are ignored by the route tree generator. See **Components** for Storybook conventions.
 
 Routes use `createFileRoute` and render feature components that rely on hooks for data.
 
@@ -289,6 +291,7 @@ The top layer handles routing, UI, and user interactions.
 - Hooks can be tested with mocked server functions (e.g. Vitest + React Testing Library)
 - Query options and pure utils in `lib/` are easy to test in isolation
 - **E2E tests** (Playwright) cover route rendering and navigation; see `docs/e2e-testing.md`
+- **Storybook** stories for components and routes; run `pnpm storybook`. Route stories use the `-` prefix (e.g. `-index.stories.tsx`) so they are not treated as route files
 
 ### 3. **Maintainability**
 

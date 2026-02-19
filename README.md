@@ -37,9 +37,9 @@ _Add / Edit flow_
 | **TanStack Query**             | Caching, invalidation, and loading/error states out of the box.                                |
 | **File-based routing**         | TanStack Router with layouts; routes like `/`, `/todos`, `/todos/add`, `/todos/:id/edit`.      |
 | **Forms**                      | React Hook Form + Zod + Shadcn (Field, Input, Select, Checkbox) with a shared schema.          |
-| **Theming**                    | Light/dark theme with CSS variables and Shadcn conventions.                                    |
+| **Theming**                    | Light, dark, system, and Sunshine themes with next-themes and CSS variables (see [Theming](docs/ux/Theming.md)). |
 | **Toasts**                     | Sonner for success and error feedback on mutations.                                            |
-| **Storybook**                  | Isolated development and documentation for UI components.                                      |
+| **Storybook**                  | Isolated development and documentation for UI components and routes (see [Storybook](#-storybook) below). |
 | **Testing**                    | Vitest for unit/integration; Playwright for E2E (critical flows).                              |
 | **Dev experience**             | ESLint, Prettier, TanStack Router/Query devtools, Drizzle Studio.                              |
 
@@ -72,10 +72,11 @@ src/
 ├── routeTree.gen.ts        # Generated routes (do not edit)
 ├── styles.css              # Tailwind + theme variables
 ├── components/
-│   ├── todos/              # Feature: list, item, add/edit forms
+│   ├── todos/              # Feature: list, item, add/edit forms + *.stories.tsx
 │   ├── ui/                 # Shadcn primitives (button, input, select, field, etc.)
-│   └── Header.tsx           # Layout
-├── routes/                 # File-based: __root, index, todos/, todos/add, todos/$id/edit
+│   ├── storybook/          # Shadcn/UI stories (button, input, dialog, etc.)
+│   └── Header.tsx          # Layout + Header.stories.tsx
+├── routes/                 # File-based: __root, index, todos/, …; -*.stories.tsx for route stories
 ├── hooks/                  # useTodos, useCreateTodo, useUpdateTodo, useDeleteTodo
 ├── queries/                # TanStack Query options (e.g. todosQueryOptions)
 ├── server/fn/              # Server functions: getTodos, createTodo, updateTodo, deleteTodo
@@ -113,7 +114,8 @@ For full detail (data flow, examples, best practices), see **[docs/technical/arc
 | **[Technical architecture](docs/technical/architecture.md)** | Modular layers, directory layout, server functions, DB, hooks, queries, routes, and conventions. |
 | **[Deployment](docs/deployment.md)**                         | Cloudflare Workers: build, deploy (via Cloudflare + GitHub), env vars, custom domains.            |
 | **[Form patterns](docs/ux/forms-react-hook-form-shadcn.md)** | React Hook Form + Zod + Shadcn patterns used for Todo add/edit.                                  |
-| **[E2E testing](docs/e2e-testing.md)**                       | Playwright setup and conventions for end-to-end tests.                                           |
+| **[Theming](docs/ux/Theming.md)**                             | Theme options (light, dark, system, Sunshine), CSS variables, and adding new themes.             |
+| **[E2E testing](docs/e2e-testing.md)**                        | Playwright setup and conventions for end-to-end tests.                                            |
 
 ---
 
@@ -170,6 +172,7 @@ For full detail (data flow, examples, best practices), see **[docs/technical/arc
 | `pnpm check`           | Prettier + ESLint (format and fix)                 |
 | `pnpm db:studio`       | Open Drizzle Studio                                |
 | `pnpm storybook`       | Start Storybook (default port 6006)                |
+| `pnpm build-storybook` | Build static Storybook for deployment              |
 
 ### Deployment
 
@@ -199,6 +202,10 @@ Use the latest Shadcn CLI:
 ```bash
 pnpm dlx shadcn@latest add button
 ```
+
+### Storybook
+
+Stories live under `src/components/` (e.g. `Header.stories.tsx`, `todos/FeatureInfo.stories.tsx`, `storybook/*.stories.*`) and `src/routes/`. For route files, **prefix the story filename with `-`** (e.g. `-index.stories.tsx`) so the TanStack Router plugin does not treat it as a route. Run `pnpm storybook` to open the UI; use `pnpm build-storybook` for a static build.
 
 ---
 

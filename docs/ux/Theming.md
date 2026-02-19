@@ -150,6 +150,10 @@ const sonnerTheme =
     : (resolvedTheme as ToasterProps['theme']);
 ```
 
+## Storybook
+
+Stories that render the Header or any component using `ThemeSelector` must wrap with `ThemeProvider` using the **same options as the app**: `themes={[...THEMES]}` and `storageKey="theme"`. Without these, next-themes may not recognize custom themes (e.g. Sunshine) and theme switching can stop working after selecting a custom theme. See `src/components/Header.stories.tsx` for an example.
+
 ## Key Conventions
 
 1. **Semantic colors**: Use Tailwind semantic tokens (`bg-background`, `text-foreground`) instead of raw colors.
