@@ -1,6 +1,6 @@
 # Deployment (Cloudflare Workers)
 
-This application is configured to build and deploy to **Cloudflare Workers** using the [Cloudflare Vite plugin](https://developers.cloudflare.com/workers/vite-plugin/) with TanStack Start’s SSR entrypoint.
+**Current setup:** The app is configured for **local development only**. The Cloudflare Vite plugin has been removed; `pnpm dev` runs the server in Node and connects to PostgreSQL via `DATABASE_URL` in `.env` / `.env.local`. The sections below describe deployment and configuration **if you re-enable Cloudflare** (e.g. add the plugin back to `vite.config.ts` and use `wrangler.jsonc` for deploy).
 
 ---
 
