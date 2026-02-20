@@ -65,7 +65,7 @@ Shared helpers live in `e2e/fixtures.ts`:
 ## CI Considerations
 
 - In CI, set `CI=true` (or ensure no server is running on the configured URL). Playwright will start the web server via `webServer.command` and wait for `webServer.url` before running tests.
-- Ensure the database is available and schema is applied before running tests (e.g. `pnpm db:push` in the workflow). The CI workflow sets `DATABASE_URL` and runs `db:push` before `test:e2e`. Tests tolerate empty or populated data but require a reachable database.
+- The CI workflow uses a **Postgres service container**. A "Wait for Postgres" step retries until the database is reachable, then `db:push` applies the schema. `DATABASE_URL` is passed to the dev server via Playwright's `webServer.env`. Tests tolerate empty or populated data but require a reachable database.
 - To run only Chromium and avoid installing all browsers, the config already uses a single project; for faster CI you can restrict with `--project=chromium` (default in this project).
 
 ## Related Documentation

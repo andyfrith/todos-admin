@@ -1,16 +1,25 @@
 import { useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
 import type { Todo } from '@/lib/schema';
+import type { TodoToDelete } from '@/components/todos/DeleteTodoConfirmation';
 import { useDeleteTodo, useTodos, useUpdateTodo } from '@/hooks/useTodos';
 import TodoComponent from '@/components/todos/Todo';
+import { DeleteTodoConfirmation } from '@/components/todos/DeleteTodoConfirmation';
 
 export default function Todos() {
   const navigate = useNavigate();
+  const [todoToDelete, setTodoToDelete] = useState<TodoToDelete>(null);
   const { data: todos, isPending, isError } = useTodos();
   const deleteTodoMutation = useDeleteTodo();
   const updateTodoMutation = useUpdateTodo();
 
-  const handleDelete = (todoId: number) => {
+  const handleDeleteClick = (todo: Todo) => {
+    setTodoToDelete(todo.id != null ? { id: todo.id, title: todo.title } : null);
+  };
+
+  const handleDeleteConfirm = (todoId: number) => {
     deleteTodoMutation.mutate(todoId);
+    setTodoToDelete(null);
   };
 
   const handleEdit = (id: number) => {
@@ -42,6 +51,13 @@ export default function Todos() {
     );
   return (
     <>
+      <DeleteTodoConfirmation
+        open={todoToDelete != null}
+        onOpenChange={(open) => !open && setTodoToDelete(null)}
+        todo={todoToDelete}
+        onConfirm={handleDeleteConfirm}
+        isDeleting={deleteTodoMutation.isPending}
+      />
       <h2 className="mb-4 text-2xl font-bold text-foreground dark:text-indigo-200">
         Todos
       </h2>
@@ -51,7 +67,10 @@ export default function Todos() {
           <TodoComponent
             key={todo.id}
             todo={todo}
-            handleDelete={handleDelete}
+            handleDelete={(id) => {
+              const t = todos.find((x) => x.id === id);
+              if (t) handleDeleteClick(t);
+            }}
             handleEdit={handleEdit}
             handleToggleComplete={handleToggleComplete}
           />
