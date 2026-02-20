@@ -19,6 +19,33 @@ test.describe('Todos list route (/todos)', () => {
   });
 });
 
+test.describe('Delete confirmation', () => {
+  test('clicking delete opens confirmation dialog', async ({ page }) => {
+    await page.goto('/todos');
+    const list = page.getByRole('list');
+    await expect(list).toBeVisible();
+    const deleteButtons = page.getByRole('button', { name: 'Delete todo' });
+    const count = await deleteButtons.count();
+    if (count === 0) test.skip();
+    await deleteButtons.first().click();
+    const dialog = page.getByRole('alertdialog');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole('heading', { name: 'Delete todo' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Delete' })).toBeVisible();
+  });
+
+  test('cancel closes dialog without deleting', async ({ page }) => {
+    await page.goto('/todos');
+    const deleteBtn = page.getByRole('button', { name: 'Delete todo' }).first();
+    if (!(await deleteBtn.isVisible())) test.skip();
+    await deleteBtn.click();
+    await expect(page.getByRole('alertdialog')).toBeVisible();
+    await page.getByRole('button', { name: 'Cancel' }).click();
+    await expect(page.getByRole('alertdialog')).not.toBeVisible();
+  });
+});
+
 test.describe('Navigation to todos', () => {
   test('navigates from home to todos via sidebar', async ({ page }) => {
     await page.goto('/');
