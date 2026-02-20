@@ -1,11 +1,13 @@
 import { useNavigate } from '@tanstack/react-router';
-import { useDeleteTodo, useTodos } from '@/hooks/useTodos';
+import type { Todo } from '@/lib/schema';
+import { useDeleteTodo, useTodos, useUpdateTodo } from '@/hooks/useTodos';
 import TodoComponent from '@/components/todos/Todo';
 
 export default function Todos() {
   const navigate = useNavigate();
   const { data: todos, isPending, isError } = useTodos();
   const deleteTodoMutation = useDeleteTodo();
+  const updateTodoMutation = useUpdateTodo();
 
   const handleDelete = (todoId: number) => {
     deleteTodoMutation.mutate(todoId);
@@ -13,6 +15,16 @@ export default function Todos() {
 
   const handleEdit = (id: number) => {
     navigate({ to: '/todos/$id/edit', params: { id: String(id) } });
+  };
+
+  const handleToggleComplete = (todo: Todo) => {
+    console.log('handleToggleComplete', todo);
+    if (todo.id == null) return;
+    updateTodoMutation.mutate({
+      id: todo.id,
+      title: todo.title,
+      completed: !(todo.completed ?? false),
+    });
   };
 
   if (isPending)
@@ -41,6 +53,7 @@ export default function Todos() {
             todo={todo}
             handleDelete={handleDelete}
             handleEdit={handleEdit}
+            handleToggleComplete={handleToggleComplete}
           />
         ))}
         {todos.length === 0 && (

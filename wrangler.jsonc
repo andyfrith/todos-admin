@@ -2,13 +2,6 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "todos-admin",
   "compatibility_date": "2026-02-14",
-  "compatibility_flags": [
-    "nodejs_compat",
-    "nodejs_compat_populate_process_env",
-  ],
-  "main": "@tanstack/react-start/server-entry",
-  "observability": {
-    "enabled": true,
-  },
-  "DATABASE_URL": "postgresql://postgres.iahmghcsvensheufprjn:ckGVMbggUitbMDjF@aws-1-us-east-1.pooler.supabase.com:6543/postgres",
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_populate_process_env"],
+  "main": "@tanstack/react-start/server-entry"
 }

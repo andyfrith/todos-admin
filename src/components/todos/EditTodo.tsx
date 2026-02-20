@@ -17,6 +17,7 @@ export default function EditTodo() {
 
   const handleSubmit = (values: Todo) => {
     if (!values.id) return;
+    console.log('handleSubmit', values);
     updateTodoMutation.mutate(
       {
         id: values.id,
