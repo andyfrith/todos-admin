@@ -1,15 +1,20 @@
 import { Pencil, TrashIcon } from 'lucide-react';
 import type { Todo } from '@/lib/schema';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function Todo({
   todo,
   handleDelete,
   handleEdit,
+  handleToggleComplete,
 }: {
   todo: Todo;
   handleDelete: (id: number) => void;
   handleEdit: (id: number) => void;
+  handleToggleComplete: (todo: Todo) => void;
 }) {
+  const isCompleted = todo.completed ?? false;
+
   return (
     <li
       key={todo.id}
@@ -20,7 +25,13 @@ export default function Todo({
           <span className="text-lg font-medium text-foreground transition-colors group-hover:text-primary dark:text-white dark:group-hover:text-indigo-200">
             {todo.title}
           </span>
-          <div>
+          <div className="flex items-center gap-2">
+            <Checkbox
+              checked={isCompleted}
+              onCheckedChange={() => handleToggleComplete(todo)}
+              aria-label={isCompleted ? 'Mark incomplete' : 'Mark complete'}
+              onClick={(e) => e.stopPropagation()}
+            />
             <button
               className="mr-3 text-muted-foreground hover:text-foreground dark:text-indigo-300/80 dark:hover:text-indigo-200"
               onClick={() => todo.id != null && handleEdit(todo.id)}
