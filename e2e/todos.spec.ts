@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
-import type { Page } from '@playwright/test';
 import { clickNavLink, openNav } from './fixtures';
+import type { Page } from '@playwright/test';
 
 test.describe('Todos list route (/todos)', () => {
   test('displays Todos heading', async ({ page }) => {
