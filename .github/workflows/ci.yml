@@ -53,7 +53,21 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 
+      - name: Wait for Postgres
+        env:
+          DATABASE_URL: postgresql://postgres@localhost:5432/todos_admin_test
+        run: |
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if node -e "
+              const { Client } = require('pg');
+              const c = new Client(process.env.DATABASE_URL);
+              c.connect().then(() => c.end()).then(() => process.exit(0)).catch(() => process.exit(1));
+            "; then echo "Postgres ready"; exit 0; fi
+            echo "Waiting for Postgres... ($i/10)"; sleep 3;
+          done
+          echo "Postgres did not become ready"; exit 1
+
       - name: E2E tests
         env:
-          DATABASE_URL: postgres://postgres@localhost:5432/todos_admin_test
+          DATABASE_URL: postgresql://postgres@localhost:5432/todos_admin_test
         run: pnpm db:push && pnpm run test:e2e
