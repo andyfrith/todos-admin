@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import type { Page } from '@playwright/test';
 import { clickNavLink, openNav } from './fixtures';
 
 test.describe('Todos list route (/todos)', () => {
@@ -20,13 +21,21 @@ test.describe('Todos list route (/todos)', () => {
 });
 
 test.describe('Delete confirmation', () => {
+  /** Wait for /todos to finish loading (list, empty state, or error). */
+  async function waitForTodosSettled(page: Page) {
+    await expect(page.getByRole('heading', { name: 'Todos' })).toBeVisible();
+    await Promise.race([
+      page.getByRole('list').waitFor({ state: 'visible', timeout: 15_000 }),
+      page.getByText('No todos found').waitFor({ state: 'visible', timeout: 15_000 }),
+      page.getByText('Error!').waitFor({ state: 'visible', timeout: 15_000 }),
+    ]);
+  }
+
   test('clicking delete opens confirmation dialog', async ({ page }) => {
     await page.goto('/todos');
-    const list = page.getByRole('list');
-    await expect(list).toBeVisible();
+    await waitForTodosSettled(page);
     const deleteButtons = page.getByRole('button', { name: 'Delete todo' });
-    const count = await deleteButtons.count();
-    if (count === 0) test.skip();
+    if ((await deleteButtons.count()) === 0) test.skip();
     await deleteButtons.first().click();
     const dialog = page.getByRole('alertdialog');
     await expect(dialog).toBeVisible();
@@ -37,6 +46,7 @@ test.describe('Delete confirmation', () => {
 
   test('cancel closes dialog without deleting', async ({ page }) => {
     await page.goto('/todos');
+    await waitForTodosSettled(page);
     const deleteBtn = page.getByRole('button', { name: 'Delete todo' }).first();
     if (!(await deleteBtn.isVisible())) test.skip();
     await deleteBtn.click();
