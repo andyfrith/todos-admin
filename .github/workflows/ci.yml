@@ -10,6 +10,9 @@ jobs:
   ci:
     name: Lint & test
     runs-on: ubuntu-latest
+    env:
+      # Job-level so every step and child process (e.g. dev server) sees it. Use 127.0.0.1 to avoid IPv6 resolution.
+      DATABASE_URL: postgresql://postgres@127.0.0.1:5432/todos_admin_test
     services:
       postgres:
         image: postgres:16
@@ -53,7 +56,17 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 
+      - name: Wait for Postgres
+        run: |
+          for i in $(seq 1 15); do
+            if node -e "
+              const { Client } = require('pg');
+              const c = new Client(process.env.DATABASE_URL);
+              c.connect().then(() => c.end()).then(() => process.exit(0)).catch(e => { console.error(e.message); process.exit(1); });
+            " 2>&1; then echo "Postgres ready"; exit 0; fi
+            echo "Waiting for Postgres... ($i/15)"; sleep 2;
+          done
+          echo "Postgres did not become ready"; exit 1
+
       - name: E2E tests
-        env:
-          DATABASE_URL: postgres://postgres@localhost:5432/todos_admin_test
         run: pnpm db:push && pnpm run test:e2e

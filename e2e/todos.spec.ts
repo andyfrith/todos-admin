@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { clickNavLink, openNav } from './fixtures';
+import type { Page } from '@playwright/test';
 
 test.describe('Todos list route (/todos)', () => {
   test('displays Todos heading', async ({ page }) => {
@@ -16,6 +17,42 @@ test.describe('Todos list route (/todos)', () => {
       (await page.getByText('Error!').isVisible()) ||
       (await page.getByRole('list').isVisible());
     expect(hasContent).toBeTruthy();
+  });
+});
+
+test.describe('Delete confirmation', () => {
+  /** Wait for /todos to finish loading (list, empty state, or error). */
+  async function waitForTodosSettled(page: Page) {
+    await expect(page.getByRole('heading', { name: 'Todos' })).toBeVisible();
+    await Promise.race([
+      page.getByRole('list').waitFor({ state: 'visible', timeout: 15_000 }),
+      page.getByText('No todos found').waitFor({ state: 'visible', timeout: 15_000 }),
+      page.getByText('Error!').waitFor({ state: 'visible', timeout: 15_000 }),
+    ]);
+  }
+
+  test('clicking delete opens confirmation dialog', async ({ page }) => {
+    await page.goto('/todos');
+    await waitForTodosSettled(page);
+    const deleteButtons = page.getByRole('button', { name: 'Delete todo' });
+    if ((await deleteButtons.count()) === 0) test.skip();
+    await deleteButtons.first().click();
+    const dialog = page.getByRole('alertdialog');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole('heading', { name: 'Delete todo' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Delete' })).toBeVisible();
+  });
+
+  test('cancel closes dialog without deleting', async ({ page }) => {
+    await page.goto('/todos');
+    await waitForTodosSettled(page);
+    const deleteBtn = page.getByRole('button', { name: 'Delete todo' }).first();
+    if (!(await deleteBtn.isVisible())) test.skip();
+    await deleteBtn.click();
+    await expect(page.getByRole('alertdialog')).toBeVisible();
+    await page.getByRole('button', { name: 'Cancel' }).click();
+    await expect(page.getByRole('alertdialog')).not.toBeVisible();
   });
 });
 
